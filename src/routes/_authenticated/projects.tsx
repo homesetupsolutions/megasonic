@@ -207,8 +207,7 @@ export const magasonic = {
           <DialogTitle>Snippet for {data.name}</DialogTitle>
         </DialogHeader>
         <p className="text-sm text-muted-foreground">
-          Save this in your other Lovable project as <code>src/lib/hub-client.ts</code>. Then call
-          <code> hub.lead(&#123;...&#125;)</code>, <code>hub.idea(&#123;...&#125;)</code>, etc. The key is shown ONCE — copy it now.
+          Save in your other Lovable project as <code>src/lib/magasonic-client.ts</code>. Call <code>magasonic.catalog()</code> for live prices, <code>magasonic.lead(&#123;...&#125;)</code>, <code>magasonic.booking(&#123;...&#125;)</code>, etc. The key shows ONCE — copy it now.
         </p>
         <pre className="bg-muted text-xs rounded p-3 overflow-auto max-h-96"><code>{snippet}</code></pre>
         <DialogFooter>
