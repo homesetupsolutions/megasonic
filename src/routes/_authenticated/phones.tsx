@@ -98,16 +98,20 @@ export default function PhonesPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Setup URLs</CardTitle>
+          <CardTitle>How it works</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <UrlRow label="CDR webhook (Action URL base)" value={cdrUrl} />
-          <p className="text-muted-foreground">
-            On each Yealink: <b>Features → Action URL</b> — paste this base URL with{" "}
-            <code>?event=incoming&mac=$mac&remote=$remote&display_remote=$display_remote&local=$local&duration=$duration</code>{" "}
-            in every event field (incoming, outgoing, established, terminated, missed). Or just
-            register the phone below and use the auto-provision URL — it sets all action URLs for you.
+        <CardContent className="space-y-2 text-sm text-muted-foreground">
+          <p>
+            <b>Any IP phone works</b> — Yealink, Grandstream, Cisco, Polycom, Fanvil, Snom. Register the
+            phone below and you'll get three provisioning URLs (Yealink <code>.cfg</code>, Grandstream{" "}
+            <code>.xml</code>, plain-text for anything else).
           </p>
+          <p>
+            Inbound caller IDs are <b>auto-matched against your Square customer list</b>. Known
+            customers get linked instantly; unknown numbers create a new lead tagged{" "}
+            <code>source: desk_phone</code>.
+          </p>
+          <UrlRow label="Universal CDR webhook (works for every brand)" value={cdrUrl} />
         </CardContent>
       </Card>
 
