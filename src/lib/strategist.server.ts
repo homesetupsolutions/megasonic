@@ -243,12 +243,12 @@ export async function executeApprovedAction(actionId: string, userId: string) {
     await db.from("ai_actions").update({
       status: "executed",
       executed_at: new Date().toISOString(),
-      result,
+      result: result as never,
     }).eq("id", actionId);
     return result;
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    await db.from("ai_actions").update({ status: "failed", result: { error: msg } }).eq("id", actionId);
+    await db.from("ai_actions").update({ status: "failed", result: { error: msg } as never }).eq("id", actionId);
     throw err;
   }
 }
