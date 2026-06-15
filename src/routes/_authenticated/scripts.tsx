@@ -122,6 +122,9 @@ function ScriptCard({ script, orgs }: { script: Script; orgs: Org[] }) {
         <div className="min-w-0">
           <CardTitle className="text-lg flex flex-wrap items-center gap-2">
             {script.title}
+            <Badge variant={script.direction === "inbound" ? "default" : "outline"}>
+              {script.direction === "inbound" ? "📞 Inbound" : "☎️ Outbound"}
+            </Badge>
             {script.is_default && <Badge>Default</Badge>}
             <Badge variant="secondary">{script.organizations?.name ?? "—"}</Badge>
             {script.services?.name && <Badge variant="outline">{script.services.name}</Badge>}
@@ -179,6 +182,7 @@ function ScriptDialog({
   const upsertFn = useServerFn(upsertScript);
   const [open, setOpen] = useState(false);
   const [orgId, setOrgId] = useState(script?.organization_id ?? orgs[0]?.id ?? "");
+  const [direction, setDirection] = useState<"inbound" | "outbound">(script?.direction ?? "inbound");
   const [title, setTitle] = useState(script?.title ?? "");
   const [greeting, setGreeting] = useState(script?.greeting ?? "");
   const [qq, setQq] = useState(script?.qualifying_questions ?? "");
