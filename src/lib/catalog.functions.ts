@@ -26,10 +26,10 @@ export const updateOrgSquare = createServerFn({ method: "POST" })
       .parse(i),
   )
   .handler(async ({ data, context }) => {
-    const patch: Record<string, unknown> = {};
+    const patch: { square_location_id?: string | null; square_enabled?: boolean } = {};
     if (data.square_location_id !== undefined) patch.square_location_id = data.square_location_id;
     if (data.square_enabled !== undefined) patch.square_enabled = data.square_enabled;
-    const { error } = await context.supabase.from("organizations").update(patch).eq("id", data.id);
+    const { error } = await context.supabase.from("organizations").update(patch as never).eq("id", data.id);
     if (error) throw error;
     return { ok: true };
   });
