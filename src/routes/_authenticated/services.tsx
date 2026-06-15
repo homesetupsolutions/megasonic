@@ -42,8 +42,8 @@ function ServicesPage() {
     queryFn: () => listServicesFn({ data: {} }) as any,
   });
 
-  const sonicfeel = orgs?.find((o) => o.kind === "sonicfeel");
-  const homesetup = orgs?.find((o) => o.kind === "homesetup");
+  const feelbass = orgs?.find((o) => o.kind === "feelbass" || o.kind === "sonicfeel");
+  const hss = orgs?.find((o) => o.kind === "hss" || o.kind === "homesetup");
 
   return (
     <div className="space-y-6 max-w-6xl">
@@ -54,16 +54,16 @@ function ServicesPage() {
         </p>
       </div>
 
-      <Tabs defaultValue="sonicfeel">
+      <Tabs defaultValue="feelbass">
         <TabsList>
-          <TabsTrigger value="sonicfeel">SonicFeel Inc</TabsTrigger>
-          <TabsTrigger value="homesetup">Home Setup Solutions</TabsTrigger>
+          <TabsTrigger value="feelbass">FeelBass</TabsTrigger>
+          <TabsTrigger value="hss">HSS</TabsTrigger>
         </TabsList>
-        <TabsContent value="sonicfeel" className="mt-4">
-          <OrgSection org={sonicfeel} services={services?.filter((s) => s.organization_id === sonicfeel?.id) ?? []} />
+        <TabsContent value="feelbass" className="mt-4">
+          <OrgSection org={feelbass} services={services?.filter((s) => s.organization_id === feelbass?.id) ?? []} />
         </TabsContent>
-        <TabsContent value="homesetup" className="mt-4">
-          <OrgSection org={homesetup} services={services?.filter((s) => s.organization_id === homesetup?.id) ?? []} />
+        <TabsContent value="hss" className="mt-4">
+          <OrgSection org={hss} services={services?.filter((s) => s.organization_id === hss?.id) ?? []} />
         </TabsContent>
       </Tabs>
     </div>

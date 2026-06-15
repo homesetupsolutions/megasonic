@@ -32,6 +32,8 @@ import {
   FolderOpen,
   TrendingUp,
   Award,
+  Plug,
+  PhoneCall,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -55,6 +57,8 @@ const items = [
   { title: "Services & Pricing", url: "/services", icon: Tags },
   { title: "Approvals", url: "/approvals", icon: CheckSquare },
   { title: "Bookings", url: "/bookings", icon: Calendar },
+  { title: "AI Calls", url: "/calls", icon: PhoneCall },
+  { title: "Connections", url: "/connections", icon: Plug },
   { title: "Projects", url: "/projects", icon: FolderKanban },
   { title: "Unified Feed", url: "/feed", icon: Rss },
   { title: "Ideas", url: "/ideas", icon: Lightbulb },
@@ -116,7 +120,7 @@ function AuthedShell() {
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-12 flex items-center border-b px-3 gap-2 sticky top-0 bg-background/80 backdrop-blur z-10">
             <SidebarTrigger />
-            <div className="font-medium text-sm text-muted-foreground">MagaSonic — SonicFeel Inc &amp; Home Setup Solutions</div>
+            <div className="font-medium text-sm text-muted-foreground">MagaSonic — FeelBass &amp; HSS</div>
           </header>
           <main className="flex-1 p-6 overflow-auto">
             <Outlet />
