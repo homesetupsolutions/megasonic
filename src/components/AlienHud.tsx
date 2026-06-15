@@ -646,30 +646,27 @@ function Stat({ label, value, color }: { label: string; value: number; color: st
   );
 }
 
-function Alien({ busy, mood, eye, hat, stage }: { busy: boolean; mood: "happy"|"focused"|"excited"|"sleepy"; eye: {x:number;y:number}; hat: Hat; stage: Stage }) {
-  // EGG stage: render an egg instead of an alien
+function Alien({ busy, mood, eye, hat, stage, palette, eyeColor, antennaTip }: { busy: boolean; mood: "happy"|"focused"|"excited"|"sleepy"; eye: {x:number;y:number}; hat: Hat; stage: Stage; palette: [string,string,string,string,string]; eyeColor: string; antennaTip: string }) {
+  // EGG stage: render an egg tinted with the current species palette
   if (stage.key === "egg") {
     return (
       <svg viewBox="0 0 120 120" className="h-full w-full drop-shadow-[0_0_18px_rgba(255,92,242,0.5)]">
         <defs>
           <linearGradient id="egg-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#fef3c7" />
-            <stop offset="100%" stopColor="#fbcfe8" />
+            <stop offset="0%" stopColor={palette[0]} />
+            <stop offset="100%" stopColor={palette[2]} />
           </linearGradient>
         </defs>
-        <ellipse cx="60" cy="68" rx="32" ry="40" fill="url(#egg-grad)" stroke="#f0abfc" strokeWidth="1.5" />
-        <circle cx="50" cy="55" r="3" fill="#fb7185" opacity="0.7" />
-        <circle cx="70" cy="78" r="2.5" fill="#22d3ee" opacity="0.7" />
-        <circle cx="62" cy="40" r="2" fill="#a78bfa" opacity="0.7" />
+        <ellipse cx="60" cy="68" rx="32" ry="40" fill="url(#egg-grad)" stroke={palette[3]} strokeWidth="1.5" />
+        <circle cx="50" cy="55" r="3" fill={palette[3]} opacity="0.7" />
+        <circle cx="70" cy="78" r="2.5" fill={palette[4]} opacity="0.7" />
+        <circle cx="62" cy="40" r="2" fill={palette[1]} opacity="0.7" />
         <ellipse cx="50" cy="48" rx="8" ry="3" fill="#ffffff" opacity="0.6" />
       </svg>
     );
   }
 
-  const fillBody =
-    stage.bodyHue === "soft" ? "url(#alien-body-soft)" :
-    stage.bodyHue === "pastel" ? "url(#alien-body-pastel)" :
-    "url(#alien-body-rainbow)";
+  const fillBody = "url(#alien-body-rainbow)";
 
   const mouth =
     busy ? <ellipse cx="60" cy="76" rx="6" ry="5" fill="#0f172a"><animate attributeName="ry" values="2;6;2" dur="1.2s" repeatCount="indefinite" /></ellipse>
@@ -681,15 +678,9 @@ function Alien({ busy, mood, eye, hat, stage }: { busy: boolean; mood: "happy"|"
     <svg viewBox="0 0 120 120" className="h-full w-full drop-shadow-[0_0_20px_rgba(255,92,242,0.6)]">
       <defs>
         <linearGradient id="alien-body-rainbow" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#ff5cf2" /><stop offset="25%" stopColor="#fde047" />
-          <stop offset="50%" stopColor="#4ade80" /><stop offset="75%" stopColor="#22d3ee" />
-          <stop offset="100%" stopColor="#a78bfa" />
-        </linearGradient>
-        <linearGradient id="alien-body-pastel" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#fbcfe8" /><stop offset="50%" stopColor="#bbf7d0" /><stop offset="100%" stopColor="#bae6fd" />
-        </linearGradient>
-        <linearGradient id="alien-body-soft" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#fde68a" /><stop offset="100%" stopColor="#fbcfe8" />
+          <stop offset="0%" stopColor={palette[0]} /><stop offset="25%" stopColor={palette[1]} />
+          <stop offset="50%" stopColor={palette[2]} /><stop offset="75%" stopColor={palette[3]} />
+          <stop offset="100%" stopColor={palette[4]} />
         </linearGradient>
         <linearGradient id="alien-shine" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" /><stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
