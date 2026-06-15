@@ -25,11 +25,14 @@ import { Route as AuthenticatedGrantsRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
+import { Route as AuthenticatedConnectionsRouteImport } from './routes/_authenticated/connections'
+import { Route as AuthenticatedCallsRouteImport } from './routes/_authenticated/calls'
 import { Route as AuthenticatedBookingsRouteImport } from './routes/_authenticated/bookings'
 import { Route as AuthenticatedApprovalsRouteImport } from './routes/_authenticated/approvals'
 import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as ApiPublicIngestRouteImport } from './routes/api/public/ingest'
 import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
+import { Route as ApiPublicHooksVoiceCallRouteImport } from './routes/api/public/hooks/voice-call'
 import { Route as ApiPublicHooksStrategistRouteImport } from './routes/api/public/hooks/strategist'
 
 const AuthRoute = AuthRouteImport.update({
@@ -111,6 +114,17 @@ const AuthenticatedCustomersRoute = AuthenticatedCustomersRouteImport.update({
   path: '/customers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedConnectionsRoute =
+  AuthenticatedConnectionsRouteImport.update({
+    id: '/connections',
+    path: '/connections',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedCallsRoute = AuthenticatedCallsRouteImport.update({
+  id: '/calls',
+  path: '/calls',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedBookingsRoute = AuthenticatedBookingsRouteImport.update({
   id: '/bookings',
   path: '/bookings',
@@ -136,6 +150,11 @@ const ApiPublicCatalogRoute = ApiPublicCatalogRouteImport.update({
   path: '/api/public/catalog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksVoiceCallRoute = ApiPublicHooksVoiceCallRouteImport.update({
+  id: '/api/public/hooks/voice-call',
+  path: '/api/public/hooks/voice-call',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksStrategistRoute =
   ApiPublicHooksStrategistRouteImport.update({
     id: '/api/public/hooks/strategist',
@@ -149,6 +168,8 @@ export interface FileRoutesByFullPath {
   '/activity': typeof AuthenticatedActivityRoute
   '/approvals': typeof AuthenticatedApprovalsRoute
   '/bookings': typeof AuthenticatedBookingsRoute
+  '/calls': typeof AuthenticatedCallsRoute
+  '/connections': typeof AuthenticatedConnectionsRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
@@ -165,6 +186,7 @@ export interface FileRoutesByFullPath {
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
+  '/api/public/hooks/voice-call': typeof ApiPublicHooksVoiceCallRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -172,6 +194,8 @@ export interface FileRoutesByTo {
   '/activity': typeof AuthenticatedActivityRoute
   '/approvals': typeof AuthenticatedApprovalsRoute
   '/bookings': typeof AuthenticatedBookingsRoute
+  '/calls': typeof AuthenticatedCallsRoute
+  '/connections': typeof AuthenticatedConnectionsRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
@@ -188,6 +212,7 @@ export interface FileRoutesByTo {
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
+  '/api/public/hooks/voice-call': typeof ApiPublicHooksVoiceCallRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -197,6 +222,8 @@ export interface FileRoutesById {
   '/_authenticated/activity': typeof AuthenticatedActivityRoute
   '/_authenticated/approvals': typeof AuthenticatedApprovalsRoute
   '/_authenticated/bookings': typeof AuthenticatedBookingsRoute
+  '/_authenticated/calls': typeof AuthenticatedCallsRoute
+  '/_authenticated/connections': typeof AuthenticatedConnectionsRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/feed': typeof AuthenticatedFeedRoute
@@ -213,6 +240,7 @@ export interface FileRoutesById {
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
+  '/api/public/hooks/voice-call': typeof ApiPublicHooksVoiceCallRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -222,6 +250,8 @@ export interface FileRouteTypes {
     | '/activity'
     | '/approvals'
     | '/bookings'
+    | '/calls'
+    | '/connections'
     | '/customers'
     | '/dashboard'
     | '/feed'
@@ -238,6 +268,7 @@ export interface FileRouteTypes {
     | '/api/public/catalog'
     | '/api/public/ingest'
     | '/api/public/hooks/strategist'
+    | '/api/public/hooks/voice-call'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -245,6 +276,8 @@ export interface FileRouteTypes {
     | '/activity'
     | '/approvals'
     | '/bookings'
+    | '/calls'
+    | '/connections'
     | '/customers'
     | '/dashboard'
     | '/feed'
@@ -261,6 +294,7 @@ export interface FileRouteTypes {
     | '/api/public/catalog'
     | '/api/public/ingest'
     | '/api/public/hooks/strategist'
+    | '/api/public/hooks/voice-call'
   id:
     | '__root__'
     | '/'
@@ -269,6 +303,8 @@ export interface FileRouteTypes {
     | '/_authenticated/activity'
     | '/_authenticated/approvals'
     | '/_authenticated/bookings'
+    | '/_authenticated/calls'
+    | '/_authenticated/connections'
     | '/_authenticated/customers'
     | '/_authenticated/dashboard'
     | '/_authenticated/feed'
@@ -285,6 +321,7 @@ export interface FileRouteTypes {
     | '/api/public/catalog'
     | '/api/public/ingest'
     | '/api/public/hooks/strategist'
+    | '/api/public/hooks/voice-call'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -294,6 +331,7 @@ export interface RootRouteChildren {
   ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
   ApiPublicIngestRoute: typeof ApiPublicIngestRoute
   ApiPublicHooksStrategistRoute: typeof ApiPublicHooksStrategistRoute
+  ApiPublicHooksVoiceCallRoute: typeof ApiPublicHooksVoiceCallRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -410,6 +448,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCustomersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/connections': {
+      id: '/_authenticated/connections'
+      path: '/connections'
+      fullPath: '/connections'
+      preLoaderRoute: typeof AuthenticatedConnectionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/calls': {
+      id: '/_authenticated/calls'
+      path: '/calls'
+      fullPath: '/calls'
+      preLoaderRoute: typeof AuthenticatedCallsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/bookings': {
       id: '/_authenticated/bookings'
       path: '/bookings'
@@ -445,6 +497,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCatalogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/voice-call': {
+      id: '/api/public/hooks/voice-call'
+      path: '/api/public/hooks/voice-call'
+      fullPath: '/api/public/hooks/voice-call'
+      preLoaderRoute: typeof ApiPublicHooksVoiceCallRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/strategist': {
       id: '/api/public/hooks/strategist'
       path: '/api/public/hooks/strategist'
@@ -459,6 +518,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
   AuthenticatedApprovalsRoute: typeof AuthenticatedApprovalsRoute
   AuthenticatedBookingsRoute: typeof AuthenticatedBookingsRoute
+  AuthenticatedCallsRoute: typeof AuthenticatedCallsRoute
+  AuthenticatedConnectionsRoute: typeof AuthenticatedConnectionsRoute
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
@@ -478,6 +539,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedActivityRoute: AuthenticatedActivityRoute,
   AuthenticatedApprovalsRoute: AuthenticatedApprovalsRoute,
   AuthenticatedBookingsRoute: AuthenticatedBookingsRoute,
+  AuthenticatedCallsRoute: AuthenticatedCallsRoute,
+  AuthenticatedConnectionsRoute: AuthenticatedConnectionsRoute,
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFeedRoute: AuthenticatedFeedRoute,
@@ -503,6 +566,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCatalogRoute: ApiPublicCatalogRoute,
   ApiPublicIngestRoute: ApiPublicIngestRoute,
   ApiPublicHooksStrategistRoute: ApiPublicHooksStrategistRoute,
+  ApiPublicHooksVoiceCallRoute: ApiPublicHooksVoiceCallRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
