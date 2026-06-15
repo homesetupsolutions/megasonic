@@ -63,6 +63,7 @@ const items = [
   { title: "Bookings", url: "/bookings", icon: Calendar },
   { title: "AI Calls", url: "/calls", icon: PhoneCall },
   { title: "Call Scripts", url: "/scripts", icon: Phone },
+  { title: "Desk Phones", url: "/phones", icon: Phone },
   { title: "Connections", url: "/connections", icon: Plug },
   { title: "Projects", url: "/projects", icon: FolderKanban },
   { title: "Unified Feed", url: "/feed", icon: Rss },
