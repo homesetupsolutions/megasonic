@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedStrategistRouteImport } from './routes/_authenticated/strategist'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated/services'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
@@ -41,6 +42,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedStrategistRoute = AuthenticatedStrategistRouteImport.update({
+  id: '/strategist',
+  path: '/strategist',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/projects': typeof AuthenticatedProjectsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/strategist': typeof AuthenticatedStrategistRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByTo {
   '/projects': typeof AuthenticatedProjectsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/strategist': typeof AuthenticatedStrategistRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/strategist': typeof AuthenticatedStrategistRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
@@ -195,6 +204,7 @@ export interface FileRouteTypes {
     | '/projects'
     | '/services'
     | '/settings'
+    | '/strategist'
     | '/api/public/catalog'
     | '/api/public/ingest'
     | '/api/public/hooks/strategist'
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
     | '/projects'
     | '/services'
     | '/settings'
+    | '/strategist'
     | '/api/public/catalog'
     | '/api/public/ingest'
     | '/api/public/hooks/strategist'
@@ -234,6 +245,7 @@ export interface FileRouteTypes {
     | '/_authenticated/projects'
     | '/_authenticated/services'
     | '/_authenticated/settings'
+    | '/_authenticated/strategist'
     | '/api/public/catalog'
     | '/api/public/ingest'
     | '/api/public/hooks/strategist'
@@ -270,6 +282,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/strategist': {
+      id: '/_authenticated/strategist'
+      path: '/strategist'
+      fullPath: '/strategist'
+      preLoaderRoute: typeof AuthenticatedStrategistRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
@@ -392,6 +411,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
   AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedStrategistRoute: typeof AuthenticatedStrategistRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -407,6 +427,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
   AuthenticatedServicesRoute: AuthenticatedServicesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedStrategistRoute: AuthenticatedStrategistRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

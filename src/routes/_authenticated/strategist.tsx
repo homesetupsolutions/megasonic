@@ -62,7 +62,7 @@ function StrategistPage() {
   });
 
   const saveSettings = useMutation({
-    mutationFn: (v: Parameters<typeof updateSettingsFn>[0]["data"]) => updateSettingsFn({ data: v }),
+    mutationFn: (v: { enabled?: boolean; cadence_minutes?: number; auto_run_on_new_lead?: boolean }) => updateSettingsFn({ data: v }),
     onSuccess: () => { toast.success("Saved"); qc.invalidateQueries({ queryKey: ["ai_settings"] }); },
   });
 
