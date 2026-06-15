@@ -121,8 +121,8 @@ export const alienNotifications = createServerFn({ method: "GET" })
     const [actions, runs, leads, bookings, calls] = await Promise.all([
       sb.from("ai_actions").select("id,kind,title,status,created_at").order("created_at",{ascending:false}).limit(8),
       sb.from("ai_runs").select("id,status,started_at,actions_count,summary").order("started_at",{ascending:false}).limit(5),
-      sb.from("leads").select("id,name,phone,status,created_at").order("created_at",{ascending:false}).limit(5),
-      sb.from("bookings").select("id,customer_name,starts_at,status").order("created_at",{ascending:false}).limit(5),
+      sb.from("leads").select("id,name,phone,stage,created_at").order("created_at",{ascending:false}).limit(5),
+      sb.from("bookings").select("id,customer_name,scheduled_at,status").order("created_at",{ascending:false}).limit(5),
       sb.from("voice_calls").select("id,from_number,to_number,status,created_at").order("created_at",{ascending:false}).limit(5),
     ]);
     return {
