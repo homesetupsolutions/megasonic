@@ -412,6 +412,7 @@ function AlienCommandCenter() {
             </Button>
           </form>
         </Card>
+        )}
       </div>
 
       {/* Script overlay */}
