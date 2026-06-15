@@ -209,6 +209,11 @@ function AlienCommandCenter() {
                 <Search className="h-4 w-4" />
               </Button>
             </div>
+            <div className="grid grid-cols-3 gap-1.5">
+              <Button size="sm" variant="outline" onClick={callPhone} className="bg-white/5 border-white/20 hover:bg-emerald-500/30 text-xs"><PhoneCall className="h-3 w-3 mr-1" />Call</Button>
+              <Button size="sm" variant="outline" onClick={textPhone} className="bg-white/5 border-white/20 hover:bg-cyan-500/30 text-xs"><MessageSquare className="h-3 w-3 mr-1" />Text</Button>
+              <Button size="sm" variant="outline" onClick={() => send(`Draft a warm follow-up message for ${phone || "this lead"}.`)} className="bg-white/5 border-white/20 hover:bg-pink-500/30 text-xs"><Sparkles className="h-3 w-3 mr-1" />Draft</Button>
+            </div>
             {phoneData && (
               <div className="text-xs space-y-2 max-h-60 overflow-auto">
                 {phoneData.customers.length > 0 && (
