@@ -8,6 +8,7 @@ export const listScripts = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("call_scripts")
       .select("*, organizations(name, slug, kind), services(name)")
+      .order("direction", { ascending: true })
       .order("is_default", { ascending: false })
       .order("title", { ascending: true });
     if (error) throw error;
@@ -19,6 +20,7 @@ const UpsertSchema = z.object({
   organization_id: z.string().uuid(),
   service_id: z.string().uuid().optional().nullable(),
   title: z.string().min(1).max(200),
+  direction: z.enum(["inbound", "outbound"]).default("inbound"),
   greeting: z.string().max(4000).default(""),
   qualifying_questions: z.string().max(4000).default(""),
   objection_handlers: z.string().max(4000).default(""),
@@ -36,6 +38,7 @@ export const upsertScript = createServerFn({ method: "POST" })
       organization_id: data.organization_id,
       service_id: data.service_id ?? null,
       title: data.title,
+      direction: data.direction,
       greeting: data.greeting,
       qualifying_questions: data.qualifying_questions,
       objection_handlers: data.objection_handlers,
