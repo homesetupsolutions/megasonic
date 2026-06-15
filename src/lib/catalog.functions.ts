@@ -173,7 +173,7 @@ export const approveChangeRequest = createServerFn({ method: "POST" })
         .eq("id", req.service_id)
         .single();
       patch.version = (cur?.version ?? 1) + 1;
-      const { error } = await supabase.from("services").update(patch).eq("id", req.service_id);
+      const { error } = await supabase.from("services").update(patch as never).eq("id", req.service_id);
       if (error) throw error;
       log.push({ step: "service.updated", id: req.service_id, patch });
     }
