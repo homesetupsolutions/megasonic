@@ -26,6 +26,7 @@ import { Route as AuthenticatedApprovalsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as ApiPublicIngestRouteImport } from './routes/api/public/ingest'
 import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
+import { Route as ApiPublicHooksStrategistRouteImport } from './routes/api/public/hooks/strategist'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -111,6 +112,12 @@ const ApiPublicCatalogRoute = ApiPublicCatalogRouteImport.update({
   path: '/api/public/catalog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksStrategistRoute =
+  ApiPublicHooksStrategistRouteImport.update({
+    id: '/api/public/hooks/strategist',
+    path: '/api/public/hooks/strategist',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -147,6 +155,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -167,6 +176,7 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/strategist'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/strategist'
   id:
     | '__root__'
     | '/'
@@ -224,6 +236,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/strategist'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -232,6 +245,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
   ApiPublicIngestRoute: typeof ApiPublicIngestRoute
+  ApiPublicHooksStrategistRoute: typeof ApiPublicHooksStrategistRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -355,6 +369,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCatalogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/strategist': {
+      id: '/api/public/hooks/strategist'
+      path: '/api/public/hooks/strategist'
+      fullPath: '/api/public/hooks/strategist'
+      preLoaderRoute: typeof ApiPublicHooksStrategistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -397,6 +418,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ApiPublicCatalogRoute: ApiPublicCatalogRoute,
   ApiPublicIngestRoute: ApiPublicIngestRoute,
+  ApiPublicHooksStrategistRoute: ApiPublicHooksStrategistRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
