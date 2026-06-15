@@ -700,10 +700,10 @@ function Alien({ busy, mood, eye, hat, stage, palette, eyeColor, antennaTip }: {
         const offset = stage.antennas === 1 ? 0 : (i - (stage.antennas - 1) / 2) * 12;
         return (
           <g key={i} style={{ transformOrigin: `${60 + offset}px 30px`, animation: `antenna-wiggle ${2.4 + i * 0.3}s ease-in-out infinite` }}>
-            <line x1={60 + offset} y1="30" x2={60 + offset} y2="12" stroke="#fde047" strokeWidth="2.5" />
-            <circle cx={60 + offset} cy="10" r="4.5" fill="#ff5cf2">
+            <line x1={60 + offset} y1="30" x2={60 + offset} y2="12" stroke={palette[1]} strokeWidth="2.5" />
+            <circle cx={60 + offset} cy="10" r="4.5" fill={antennaTip}>
               <animate attributeName="r" values="3.5;5.5;3.5" dur="2.4s" repeatCount="indefinite" />
-              <animate attributeName="fill" values="#ff5cf2;#fde047;#4ade80;#22d3ee;#a78bfa;#ff5cf2" dur="8s" repeatCount="indefinite" />
+              <animate attributeName="fill" values={`${palette[0]};${palette[1]};${palette[2]};${palette[3]};${palette[4]};${palette[0]}`} dur="8s" repeatCount="indefinite" />
             </circle>
           </g>
         );
@@ -711,16 +711,16 @@ function Alien({ busy, mood, eye, hat, stage, palette, eyeColor, antennaTip }: {
 
       <ellipse cx="60" cy="55" rx="36" ry="32" fill={fillBody} />
       <ellipse cx="60" cy="48" rx="32" ry="22" fill="url(#alien-shine)" />
-      <circle cx="34" cy="68" r="6" fill="#ff5cf2" opacity="0.45" />
-      <circle cx="86" cy="68" r="6" fill="#ff5cf2" opacity="0.45" />
+      <circle cx="34" cy="68" r="6" fill={palette[0]} opacity="0.45" />
+      <circle cx="86" cy="68" r="6" fill={palette[0]} opacity="0.45" />
 
       {/* eyes */}
       <g style={{ transformOrigin: "48px 55px", animation: mood === "sleepy" ? undefined : "alien-blink 6s infinite" }}>
-        <ellipse cx="48" cy="55" rx="9" ry={mood === "sleepy" ? 2 : 11} fill="#0f172a" />
+        <ellipse cx="48" cy="55" rx="9" ry={mood === "sleepy" ? 2 : 11} fill={eyeColor} />
         {mood !== "sleepy" && <circle cx={51 + eye.x} cy={51 + eye.y} r="3.5" fill="#fff" />}
       </g>
       <g style={{ transformOrigin: "72px 55px", animation: mood === "sleepy" ? undefined : "alien-blink 6s infinite" }}>
-        <ellipse cx="72" cy="55" rx="9" ry={mood === "sleepy" ? 2 : 11} fill="#0f172a" />
+        <ellipse cx="72" cy="55" rx="9" ry={mood === "sleepy" ? 2 : 11} fill={eyeColor} />
         {mood !== "sleepy" && <circle cx={75 + eye.x} cy={51 + eye.y} r="3.5" fill="#fff" />}
       </g>
       {mouth}
