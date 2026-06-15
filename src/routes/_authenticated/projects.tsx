@@ -30,8 +30,11 @@ function ProjectsPage() {
   const createFn = useServerFn(createProject);
   const rotateFn = useServerFn(rotateProjectKey);
   const deleteFn = useServerFn(deleteProject);
+  const assignFn = useServerFn(assignProjectOrg);
+  const orgsFn = useServerFn(listOrgs);
 
   const { data: projects } = useQuery({ queryKey: ["projects"], queryFn: () => listFn() });
+  const { data: orgs } = useQuery<any[]>({ queryKey: ["orgs"], queryFn: () => orgsFn() as any });
   const [newKey, setNewKey] = useState<{ name: string; key: string } | null>(null);
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
