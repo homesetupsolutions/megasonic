@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Plus, Pencil, Trash2, Phone, Copy, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ type Script = {
   organization_id: string;
   service_id: string | null;
   title: string;
+  direction: "inbound" | "outbound";
   greeting: string;
   qualifying_questions: string;
   objection_handlers: string;
@@ -38,34 +40,47 @@ function ScriptsPage() {
   const { data: scripts } = useQuery<Script[]>({ queryKey: ["scripts"], queryFn: () => listFn() as any });
   const { data: orgs } = useQuery<Org[]>({ queryKey: ["orgs"], queryFn: () => listOrgsFn() as any });
 
+  const inbound = (scripts ?? []).filter((s) => s.direction === "inbound");
+  const outbound = (scripts ?? []).filter((s) => s.direction === "outbound");
+
   return (
     <div className="space-y-6 max-w-5xl">
-      <div className="flex items-start justify-between gap-4">
-        <div>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="min-w-0">
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Phone className="h-7 w-7" /> Call Scripts
           </h1>
           <p className="text-muted-foreground">
-            What the AI says when the phone rings. Edit anything — the AI uses these word-for-word.
-            One "default" script per business is required.
+            What you (or the AI) say on every call. Tagged <strong>Inbound</strong> (calls coming to you)
+            or <strong>Outbound</strong> (calls you make out). Edit anything — the AI follows these word-for-word.
           </p>
         </div>
         <ScriptDialog orgs={orgs ?? []} mode="create" />
       </div>
 
-      <div className="grid gap-4">
-        {(scripts ?? []).map((s) => (
-          <ScriptCard key={s.id} script={s} orgs={orgs ?? []} />
-        ))}
-        {!scripts?.length && (
-          <Card>
-            <CardContent className="py-10 text-center text-muted-foreground">
-              No scripts yet. Click "Add script" above to get started.
-            </CardContent>
-          </Card>
-        )}
-      </div>
+      <Tabs defaultValue="inbound">
+        <TabsList>
+          <TabsTrigger value="inbound">📞 Inbound ({inbound.length})</TabsTrigger>
+          <TabsTrigger value="outbound">☎️ Outbound ({outbound.length})</TabsTrigger>
+        </TabsList>
+        <TabsContent value="inbound" className="mt-4 grid gap-4">
+          {inbound.map((s) => <ScriptCard key={s.id} script={s} orgs={orgs ?? []} />)}
+          {!inbound.length && <EmptyState label="No inbound scripts yet." />}
+        </TabsContent>
+        <TabsContent value="outbound" className="mt-4 grid gap-4">
+          {outbound.map((s) => <ScriptCard key={s.id} script={s} orgs={orgs ?? []} />)}
+          {!outbound.length && <EmptyState label="No outbound scripts yet." />}
+        </TabsContent>
+      </Tabs>
     </div>
+  );
+}
+
+function EmptyState({ label }: { label: string }) {
+  return (
+    <Card>
+      <CardContent className="py-10 text-center text-muted-foreground">{label}</CardContent>
+    </Card>
   );
 }
 
