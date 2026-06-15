@@ -122,7 +122,7 @@ async function handle(request: Request) {
       direction,
       event,
       caller_number: direction === "inbound" ? remote : local,
-      caller_name: displayRemote,
+      caller_name: squareCustomer?.name || displayRemote,
       callee_number: direction === "inbound" ? local : remote,
       duration_seconds: duration,
       answered,
