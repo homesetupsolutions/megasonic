@@ -108,7 +108,7 @@ function AuthedShell() {
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-12 flex items-center border-b px-3 gap-2 sticky top-0 bg-background/80 backdrop-blur z-10">
             <SidebarTrigger />
-            <div className="font-medium text-sm text-muted-foreground">Master Command Center</div>
+            <div className="font-medium text-sm text-muted-foreground">MagaSonic — SonicFeel Inc &amp; Home Setup Solutions</div>
           </header>
           <main className="flex-1 p-6 overflow-auto">
             <Outlet />
