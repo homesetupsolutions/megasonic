@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Zap, Mail, CalendarCheck, Search, DollarSign, Heart, Crown, Gem, Music, VolumeX, Volume2 } from "lucide-react";
+import { Sparkles, Zap, Mail, CalendarCheck, Search, DollarSign, Heart, Crown, Gem, Music, VolumeX, Volume2, Maximize2, Minimize2, Egg } from "lucide-react";
 
 type Action = {
   id: string;
@@ -41,6 +41,35 @@ const QUIPS = [
 
 const HATS = ["none", "crown", "party", "halo", "cap"] as const;
 type Hat = typeof HATS[number];
+
+// ----- ALIEN TYPES (new species each monthly rebirth) -----
+type AlienType = {
+  id: string;
+  name: string;
+  emoji: string;
+  palette: [string, string, string, string, string]; // 5 stops for body gradient
+  eyeColor: string;
+  antennaTip: string;
+};
+const ALIEN_TYPES: AlienType[] = [
+  { id: "cosmic",  name: "Cosmic",   emoji: "🌌", palette: ["#ff5cf2","#fde047","#4ade80","#22d3ee","#a78bfa"], eyeColor: "#0f172a", antennaTip: "#ff5cf2" },
+  { id: "lava",    name: "Lava",     emoji: "🔥", palette: ["#fde047","#fb923c","#f97316","#ef4444","#7c2d12"], eyeColor: "#0f172a", antennaTip: "#fb923c" },
+  { id: "ocean",   name: "Ocean",    emoji: "🌊", palette: ["#a5f3fc","#67e8f9","#22d3ee","#0ea5e9","#1e40af"], eyeColor: "#082f49", antennaTip: "#22d3ee" },
+  { id: "forest",  name: "Forest",   emoji: "🌿", palette: ["#bbf7d0","#86efac","#4ade80","#16a34a","#14532d"], eyeColor: "#052e16", antennaTip: "#84cc16" },
+  { id: "candy",   name: "Candy",    emoji: "🍬", palette: ["#fbcfe8","#f9a8d4","#f472b6","#e879f9","#c084fc"], eyeColor: "#831843", antennaTip: "#f472b6" },
+  { id: "shadow",  name: "Shadow",   emoji: "🌑", palette: ["#a78bfa","#8b5cf6","#6366f1","#4338ca","#1e1b4b"], eyeColor: "#fde047", antennaTip: "#a78bfa" },
+  { id: "sunset",  name: "Sunset",   emoji: "🌅", palette: ["#fef08a","#fdba74","#fb7185","#e11d48","#7e22ce"], eyeColor: "#0f172a", antennaTip: "#fb7185" },
+  { id: "mint",    name: "Mint",     emoji: "🍃", palette: ["#ccfbf1","#5eead4","#2dd4bf","#0d9488","#134e4a"], eyeColor: "#042f2e", antennaTip: "#2dd4bf" },
+  { id: "ghost",   name: "Ghost",    emoji: "👻", palette: ["#ffffff","#e5e7eb","#cbd5e1","#94a3b8","#475569"], eyeColor: "#0f172a", antennaTip: "#c4b5fd" },
+  { id: "ember",   name: "Ember",    emoji: "✨", palette: ["#fef9c3","#fde047","#facc15","#ea580c","#7c2d12"], eyeColor: "#1c1917", antennaTip: "#facc15" },
+];
+function getMonthEpoch(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+function randomType(exceptId?: string): AlienType {
+  const pool = exceptId ? ALIEN_TYPES.filter((t) => t.id !== exceptId) : ALIEN_TYPES;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
 
 // ----- PET GROWTH STAGES -----
 type Stage = {
@@ -105,12 +134,16 @@ export function AlienHud({
   isRunning,
   onRun,
   onTeach,
+  expanded = false,
+  onToggleExpand,
 }: {
   actions: Action[];
   runs: Run[];
   isRunning: boolean;
   onRun: () => void;
   onTeach: (note: string) => void;
+  expanded?: boolean;
+  onToggleExpand?: () => void;
 }) {
   const latestRun = runs[0];
   const runningNow =
@@ -144,7 +177,22 @@ export function AlienHud({
     if (typeof window === "undefined") return 0;
     return Number(localStorage.getItem("alien.bonusXp") || 0);
   });
-  const xp = stats.executed + bonusXp;
+  // baseline = stats.executed at last rebirth; subtract so each life starts at 0 wins
+  const [baseline, setBaseline] = useState<number>(() => {
+    if (typeof window === "undefined") return 0;
+    return Number(localStorage.getItem("alien.baseline") || 0);
+  });
+  // alien species (rerolled each monthly rebirth)
+  const [typeId, setTypeId] = useState<string>(() => {
+    if (typeof window === "undefined") return ALIEN_TYPES[0].id;
+    return localStorage.getItem("alien.typeId") || ALIEN_TYPES[0].id;
+  });
+  const alienType = useMemo(
+    () => ALIEN_TYPES.find((t) => t.id === typeId) ?? ALIEN_TYPES[0],
+    [typeId]
+  );
+
+  const xp = Math.max(0, stats.executed - baseline) + bonusXp;
   const { stage, next, toNext, progress } = stageFor(xp);
 
   const [petName, setPetName] = useState<string>(() => {
@@ -155,6 +203,8 @@ export function AlienHud({
 
   useEffect(() => { try { localStorage.setItem("alien.name", petName); } catch { /* */ } }, [petName]);
   useEffect(() => { try { localStorage.setItem("alien.bonusXp", String(bonusXp)); } catch { /* */ } }, [bonusXp]);
+  useEffect(() => { try { localStorage.setItem("alien.baseline", String(baseline)); } catch { /* */ } }, [baseline]);
+  useEffect(() => { try { localStorage.setItem("alien.typeId", typeId); } catch { /* */ } }, [typeId]);
 
   // floating popups
   const [pops, setPops] = useState<Array<{ id: number; left: number; top?: number; text: string }>>([]);
@@ -186,6 +236,41 @@ export function AlienHud({
       setTimeout(() => setEvolveBurst(false), 4500);
     }
   }, [stage, addPop]);
+
+  // Monthly rebirth — on the 1st of each month the alien becomes an egg
+  // again with a brand-new randomly-chosen species. Checked on mount + hourly.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const check = () => {
+      const epoch = getMonthEpoch();
+      const stored = localStorage.getItem("alien.epoch");
+      if (!stored) {
+        localStorage.setItem("alien.epoch", epoch);
+        if (!localStorage.getItem("alien.typeId")) {
+          const t = randomType();
+          localStorage.setItem("alien.typeId", t.id);
+          setTypeId(t.id);
+        }
+        return;
+      }
+      if (stored !== epoch) {
+        // REBIRTH! Reset xp baseline + bonus, reroll species, drop to egg
+        localStorage.setItem("alien.epoch", epoch);
+        const t = randomType(localStorage.getItem("alien.typeId") || undefined);
+        setBaseline(stats.executed);
+        setBonusXp(0);
+        setTypeId(t.id);
+        addPop(`🥚 REBIRTH → ${t.name} ${t.emoji}!`, 50);
+        for (let i = 0; i < 14; i++) {
+          setTimeout(() => addPop(["✨","🌈","🥚","💫"][i % 4], Math.random() * 90, Math.random() * 60), i * 120);
+        }
+      }
+    };
+    check();
+    const id = setInterval(check, 60 * 60 * 1000);
+    return () => clearInterval(id);
+  }, [stats.executed, addPop]);
+
 
   const lastTitle = actions[0]?.title;
   const [teach, setTeach] = useState("");
@@ -384,8 +469,8 @@ export function AlienHud({
             {stage.hasAura && (
               <div className={"absolute inset-0 -m-3 rounded-full bg-[conic-gradient(from_0deg,#ff5cf2,#fde047,#4ade80,#22d3ee,#a78bfa,#ff5cf2)] blur-xl opacity-50 animate-[spin_20s_linear_infinite] " + (evolveBurst ? "opacity-80" : "")} />
             )}
-            <div className={"relative h-40 w-40 transition-transform duration-700 ease-out " + danceClass} style={{ transform: `scale(${stage.scale})` }}>
-              <Alien busy={!!runningNow} mood={mood} eye={eye} hat={hat} stage={stage} />
+            <div className={"relative transition-all duration-700 ease-out " + (expanded ? "h-72 w-72 md:h-96 md:w-96" : "h-40 w-40") + " " + danceClass} style={{ transform: `scale(${stage.scale * (expanded ? 1.15 : 1)})` }}>
+              <Alien busy={!!runningNow} mood={mood} eye={eye} hat={hat} stage={stage} palette={alienType.palette} eyeColor={alienType.eyeColor} antennaTip={alienType.antennaTip} />
             </div>
             {/* heart sprinkles */}
             <div className="absolute inset-0 pointer-events-none">
@@ -440,12 +525,24 @@ export function AlienHud({
             <Badge className="border-0 bg-gradient-to-r from-pink-500 via-yellow-400 to-cyan-400 text-black font-bold">
               {stage.emoji} {stage.name}
             </Badge>
+            <Badge className="border-0 bg-white/20 text-white font-bold" title="Species — rerolled on the 1st of each month">
+              {alienType.emoji} {alienType.name}
+            </Badge>
             <Badge className={"border-0 font-bold " + (runningNow
               ? "bg-emerald-400 text-black animate-pulse"
               : "bg-white/20 text-white")}>
               {runningNow ? "● hunting" : "○ resting"}
             </Badge>
             <Badge className="border-0 bg-white/15 text-white text-[10px]">mood: {mood}</Badge>
+            {onToggleExpand && (
+              <button
+                onClick={onToggleExpand}
+                title={expanded ? "Collapse — show all windows" : "Expand — hide windows & make alien bigger"}
+                className="ml-auto inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full bg-white/15 hover:bg-white/30 border border-white/25 font-bold uppercase tracking-wider"
+              >
+                {expanded ? <><Minimize2 className="h-3 w-3" /> collapse</> : <><Maximize2 className="h-3 w-3" /> expand</>}
+              </button>
+            )}
           </div>
 
           <div className="space-y-1">
@@ -549,30 +646,27 @@ function Stat({ label, value, color }: { label: string; value: number; color: st
   );
 }
 
-function Alien({ busy, mood, eye, hat, stage }: { busy: boolean; mood: "happy"|"focused"|"excited"|"sleepy"; eye: {x:number;y:number}; hat: Hat; stage: Stage }) {
-  // EGG stage: render an egg instead of an alien
+function Alien({ busy, mood, eye, hat, stage, palette, eyeColor, antennaTip }: { busy: boolean; mood: "happy"|"focused"|"excited"|"sleepy"; eye: {x:number;y:number}; hat: Hat; stage: Stage; palette: [string,string,string,string,string]; eyeColor: string; antennaTip: string }) {
+  // EGG stage: render an egg tinted with the current species palette
   if (stage.key === "egg") {
     return (
       <svg viewBox="0 0 120 120" className="h-full w-full drop-shadow-[0_0_18px_rgba(255,92,242,0.5)]">
         <defs>
           <linearGradient id="egg-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#fef3c7" />
-            <stop offset="100%" stopColor="#fbcfe8" />
+            <stop offset="0%" stopColor={palette[0]} />
+            <stop offset="100%" stopColor={palette[2]} />
           </linearGradient>
         </defs>
-        <ellipse cx="60" cy="68" rx="32" ry="40" fill="url(#egg-grad)" stroke="#f0abfc" strokeWidth="1.5" />
-        <circle cx="50" cy="55" r="3" fill="#fb7185" opacity="0.7" />
-        <circle cx="70" cy="78" r="2.5" fill="#22d3ee" opacity="0.7" />
-        <circle cx="62" cy="40" r="2" fill="#a78bfa" opacity="0.7" />
+        <ellipse cx="60" cy="68" rx="32" ry="40" fill="url(#egg-grad)" stroke={palette[3]} strokeWidth="1.5" />
+        <circle cx="50" cy="55" r="3" fill={palette[3]} opacity="0.7" />
+        <circle cx="70" cy="78" r="2.5" fill={palette[4]} opacity="0.7" />
+        <circle cx="62" cy="40" r="2" fill={palette[1]} opacity="0.7" />
         <ellipse cx="50" cy="48" rx="8" ry="3" fill="#ffffff" opacity="0.6" />
       </svg>
     );
   }
 
-  const fillBody =
-    stage.bodyHue === "soft" ? "url(#alien-body-soft)" :
-    stage.bodyHue === "pastel" ? "url(#alien-body-pastel)" :
-    "url(#alien-body-rainbow)";
+  const fillBody = "url(#alien-body-rainbow)";
 
   const mouth =
     busy ? <ellipse cx="60" cy="76" rx="6" ry="5" fill="#0f172a"><animate attributeName="ry" values="2;6;2" dur="1.2s" repeatCount="indefinite" /></ellipse>
@@ -584,15 +678,9 @@ function Alien({ busy, mood, eye, hat, stage }: { busy: boolean; mood: "happy"|"
     <svg viewBox="0 0 120 120" className="h-full w-full drop-shadow-[0_0_20px_rgba(255,92,242,0.6)]">
       <defs>
         <linearGradient id="alien-body-rainbow" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#ff5cf2" /><stop offset="25%" stopColor="#fde047" />
-          <stop offset="50%" stopColor="#4ade80" /><stop offset="75%" stopColor="#22d3ee" />
-          <stop offset="100%" stopColor="#a78bfa" />
-        </linearGradient>
-        <linearGradient id="alien-body-pastel" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#fbcfe8" /><stop offset="50%" stopColor="#bbf7d0" /><stop offset="100%" stopColor="#bae6fd" />
-        </linearGradient>
-        <linearGradient id="alien-body-soft" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#fde68a" /><stop offset="100%" stopColor="#fbcfe8" />
+          <stop offset="0%" stopColor={palette[0]} /><stop offset="25%" stopColor={palette[1]} />
+          <stop offset="50%" stopColor={palette[2]} /><stop offset="75%" stopColor={palette[3]} />
+          <stop offset="100%" stopColor={palette[4]} />
         </linearGradient>
         <linearGradient id="alien-shine" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" /><stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
@@ -612,10 +700,10 @@ function Alien({ busy, mood, eye, hat, stage }: { busy: boolean; mood: "happy"|"
         const offset = stage.antennas === 1 ? 0 : (i - (stage.antennas - 1) / 2) * 12;
         return (
           <g key={i} style={{ transformOrigin: `${60 + offset}px 30px`, animation: `antenna-wiggle ${2.4 + i * 0.3}s ease-in-out infinite` }}>
-            <line x1={60 + offset} y1="30" x2={60 + offset} y2="12" stroke="#fde047" strokeWidth="2.5" />
-            <circle cx={60 + offset} cy="10" r="4.5" fill="#ff5cf2">
+            <line x1={60 + offset} y1="30" x2={60 + offset} y2="12" stroke={palette[1]} strokeWidth="2.5" />
+            <circle cx={60 + offset} cy="10" r="4.5" fill={antennaTip}>
               <animate attributeName="r" values="3.5;5.5;3.5" dur="2.4s" repeatCount="indefinite" />
-              <animate attributeName="fill" values="#ff5cf2;#fde047;#4ade80;#22d3ee;#a78bfa;#ff5cf2" dur="8s" repeatCount="indefinite" />
+              <animate attributeName="fill" values={`${palette[0]};${palette[1]};${palette[2]};${palette[3]};${palette[4]};${palette[0]}`} dur="8s" repeatCount="indefinite" />
             </circle>
           </g>
         );
@@ -623,16 +711,16 @@ function Alien({ busy, mood, eye, hat, stage }: { busy: boolean; mood: "happy"|"
 
       <ellipse cx="60" cy="55" rx="36" ry="32" fill={fillBody} />
       <ellipse cx="60" cy="48" rx="32" ry="22" fill="url(#alien-shine)" />
-      <circle cx="34" cy="68" r="6" fill="#ff5cf2" opacity="0.45" />
-      <circle cx="86" cy="68" r="6" fill="#ff5cf2" opacity="0.45" />
+      <circle cx="34" cy="68" r="6" fill={palette[0]} opacity="0.45" />
+      <circle cx="86" cy="68" r="6" fill={palette[0]} opacity="0.45" />
 
       {/* eyes */}
       <g style={{ transformOrigin: "48px 55px", animation: mood === "sleepy" ? undefined : "alien-blink 6s infinite" }}>
-        <ellipse cx="48" cy="55" rx="9" ry={mood === "sleepy" ? 2 : 11} fill="#0f172a" />
+        <ellipse cx="48" cy="55" rx="9" ry={mood === "sleepy" ? 2 : 11} fill={eyeColor} />
         {mood !== "sleepy" && <circle cx={51 + eye.x} cy={51 + eye.y} r="3.5" fill="#fff" />}
       </g>
       <g style={{ transformOrigin: "72px 55px", animation: mood === "sleepy" ? undefined : "alien-blink 6s infinite" }}>
-        <ellipse cx="72" cy="55" rx="9" ry={mood === "sleepy" ? 2 : 11} fill="#0f172a" />
+        <ellipse cx="72" cy="55" rx="9" ry={mood === "sleepy" ? 2 : 11} fill={eyeColor} />
         {mood !== "sleepy" && <circle cx={75 + eye.x} cy={51 + eye.y} r="3.5" fill="#fff" />}
       </g>
       {mouth}
