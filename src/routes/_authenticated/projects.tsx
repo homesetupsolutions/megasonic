@@ -36,7 +36,7 @@ function ProjectsPage() {
 
   const create = useMutation({
     mutationFn: (input: { name: string; url?: string }) => createFn({ data: input }),
-    onSuccess: (res) => {
+    onSuccess: (res: any) => {
       qc.invalidateQueries({ queryKey: ["projects"] });
       setNewKey({ name: res.project.name, key: res.apiKey });
       setName("");
@@ -48,8 +48,8 @@ function ProjectsPage() {
 
   const rotate = useMutation({
     mutationFn: (id: string) => rotateFn({ data: { id } }),
-    onSuccess: (res, id) => {
-      const p = projects?.find((x: any) => x.id === id);
+    onSuccess: (res: any, id) => {
+      const p = (projects as any[] | undefined)?.find((x) => x.id === id);
       setNewKey({ name: p?.name ?? "Project", key: res.apiKey });
       qc.invalidateQueries({ queryKey: ["projects"] });
     },
