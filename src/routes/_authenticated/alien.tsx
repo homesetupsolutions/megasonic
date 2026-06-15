@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import {
   Phone, Send, Sparkles, Search, BellRing, ScrollText, Zap, X,
+  Mic, MicOff, Volume2, VolumeX, Copy, PhoneCall, MessageSquare,
 } from "lucide-react";
 import { AlienHud } from "@/components/AlienHud";
 import { askAlien, lookupByPhone, alienNotifications } from "@/lib/alien.functions";
