@@ -43,7 +43,7 @@ export const Route = createFileRoute("/api/public/all")({
             fetched_at: new Date().toISOString(),
           };
 
-          const tasks: Promise<void>[] = [];
+          const tasks: PromiseLike<void>[] = [];
 
           if (include.includes("services") && orgFilter) {
             tasks.push(
