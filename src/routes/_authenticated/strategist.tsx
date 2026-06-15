@@ -170,10 +170,9 @@ function StrategistPage() {
           <Button
             variant="secondary"
             onClick={async () => {
-              const fn = useServerFn(runRemindersNow);
-              await (runRemindersNow as any)({ data: {} });
+              await remindersNowFn({ data: {} } as any);
               toast.success("Reminder sweep queued");
-              qc.invalidateQueries({ queryKey: ["ai-actions"] });
+              qc.invalidateQueries({ queryKey: ["ai_actions"] });
             }}
           >
             Run now
