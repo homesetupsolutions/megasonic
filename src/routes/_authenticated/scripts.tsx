@@ -198,6 +198,7 @@ function ScriptDialog({
           id: script?.id,
           organization_id: orgId,
           title,
+          direction,
           greeting,
           qualifying_questions: qq,
           objection_handlers: obj,
@@ -241,6 +242,27 @@ function ScriptDialog({
                 </option>
               ))}
             </select>
+          </div>
+          <div>
+            <Label>Direction</Label>
+            <div className="flex gap-2 mt-1">
+              <Button
+                type="button"
+                variant={direction === "inbound" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setDirection("inbound")}
+              >
+                📞 Inbound
+              </Button>
+              <Button
+                type="button"
+                variant={direction === "outbound" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setDirection("outbound")}
+              >
+                ☎️ Outbound
+              </Button>
+            </div>
           </div>
           <div>
             <Label>Title</Label>
