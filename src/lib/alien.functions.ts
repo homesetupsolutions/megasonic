@@ -54,9 +54,9 @@ export const askAlien = createServerFn({ method: "POST" })
     const [orgs, services, leads, customers, bookings, scripts, actions, ideas, grants, investors, settings] = await Promise.all([
       sb.from("organizations").select("id,name,slug,kind").limit(20),
       sb.from("services").select("id,name,price_cents,duration_minutes,description, organizations(name,slug)").limit(50),
-      sb.from("leads").select("id,name,phone,email,status,notes,created_at, organizations(name,slug)").order("created_at",{ascending:false}).limit(20),
+      sb.from("leads").select("id,name,phone,email,stage,notes,created_at").order("created_at",{ascending:false}).limit(20),
       sb.from("customers").select("id,name,phone,email,notes, organizations(name,slug)").limit(20),
-      sb.from("bookings").select("id,customer_name,customer_phone,starts_at,status, services(name), organizations(name,slug)").order("starts_at",{ascending:false}).limit(20),
+      sb.from("bookings").select("id,customer_name,customer_phone,scheduled_at,status, services(name), organizations(name,slug)").order("scheduled_at",{ascending:false}).limit(20),
       sb.from("call_scripts").select("id,title,direction,greeting,qualifying_questions,objection_handlers,closing,full_script, organizations(name,slug), services(name)").limit(30),
       sb.from("ai_actions").select("id,kind,title,status,priority,created_at").order("created_at",{ascending:false}).limit(20),
       sb.from("ideas").select("id,title,notes,status").limit(20),
