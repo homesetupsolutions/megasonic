@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import {
   Phone, Send, Sparkles, Search, BellRing, ScrollText, Zap, X,
+  Mic, MicOff, Volume2, VolumeX, Copy, PhoneCall, MessageSquare,
 } from "lucide-react";
 import { AlienHud } from "@/components/AlienHud";
 import { askAlien, lookupByPhone, alienNotifications } from "@/lib/alien.functions";
@@ -46,6 +47,9 @@ function AlienCommandCenter() {
   const [actions, setActions] = useState<Awaited<ReturnType<typeof actionsFn>>>([]);
   const [notifs, setNotifs] = useState<Awaited<ReturnType<typeof notif>> | null>(null);
   const [activeScript, setActiveScript] = useState<{ title: string; body: string } | null>(null);
+  const [listening, setListening] = useState(false);
+  const [speakReplies, setSpeakReplies] = useState(false);
+  const recogRef = useRef<unknown>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -71,6 +75,16 @@ function AlienCommandCenter() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, thinking]);
 
+  const speak = (text: string) => {
+    if (!speakReplies || typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    try {
+      const u = new SpeechSynthesisUtterance(text.replace(/[*_#`>-]/g, "").slice(0, 600));
+      u.rate = 1.05; u.pitch = 1.25;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    } catch { /* noop */ }
+  };
+
   const send = async (override?: string) => {
     const text = (override ?? input).trim();
     if (!text || thinking) return;
@@ -81,6 +95,7 @@ function AlienCommandCenter() {
     try {
       const res = await ask({ data: { messages: next, phone: phone || null } });
       setMessages((m) => [...m, { role: "assistant", content: res.reply }]);
+      speak(res.reply);
     } catch (e: unknown) {
       const err = e as Error;
       toast.error(err?.message ?? "Alien hiccup");
@@ -88,6 +103,38 @@ function AlienCommandCenter() {
     } finally {
       setThinking(false);
     }
+  };
+
+  const toggleMic = () => {
+    const w = window as unknown as { SpeechRecognition?: new () => unknown; webkitSpeechRecognition?: new () => unknown };
+    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
+    if (!SR) { toast.error("Voice input not supported in this browser"); return; }
+    if (listening) {
+      try { (recogRef.current as { stop?: () => void } | null)?.stop?.(); } catch { /* noop */ }
+      setListening(false); return;
+    }
+    const rec = new SR() as { lang: string; interimResults: boolean; onresult: (e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void; onend: () => void; onerror: () => void; start: () => void; stop: () => void };
+    rec.lang = "en-US"; rec.interimResults = false;
+    rec.onresult = (e) => {
+      const t = Array.from(e.results).map((r) => r[0].transcript).join(" ");
+      setInput((v) => (v ? v + " " : "") + t);
+    };
+    rec.onend = () => setListening(false);
+    rec.onerror = () => setListening(false);
+    recogRef.current = rec;
+    try { rec.start(); setListening(true); } catch { setListening(false); }
+  };
+
+  const copyMsg = async (text: string) => {
+    try { await navigator.clipboard.writeText(text); toast.success("Copied!"); } catch { toast.error("Copy failed"); }
+  };
+  const callPhone = () => {
+    if (!phone.trim()) { toast.error("Enter a phone number first"); return; }
+    window.location.href = `tel:${phone.replace(/[^\d+]/g, "")}`;
+  };
+  const textPhone = () => {
+    if (!phone.trim()) { toast.error("Enter a phone number first"); return; }
+    window.location.href = `sms:${phone.replace(/[^\d+]/g, "")}`;
   };
 
   const doLookup = async () => {
@@ -161,6 +208,11 @@ function AlienCommandCenter() {
               <Button onClick={doLookup} className="bg-gradient-to-r from-pink-500 to-fuchsia-500">
                 <Search className="h-4 w-4" />
               </Button>
+            </div>
+            <div className="grid grid-cols-3 gap-1.5">
+              <Button size="sm" variant="outline" onClick={callPhone} className="bg-white/5 border-white/20 hover:bg-emerald-500/30 text-xs"><PhoneCall className="h-3 w-3 mr-1" />Call</Button>
+              <Button size="sm" variant="outline" onClick={textPhone} className="bg-white/5 border-white/20 hover:bg-cyan-500/30 text-xs"><MessageSquare className="h-3 w-3 mr-1" />Text</Button>
+              <Button size="sm" variant="outline" onClick={() => send(`Draft a warm follow-up message for ${phone || "this lead"}.`)} className="bg-white/5 border-white/20 hover:bg-pink-500/30 text-xs"><Sparkles className="h-3 w-3 mr-1" />Draft</Button>
             </div>
             {phoneData && (
               <div className="text-xs space-y-2 max-h-60 overflow-auto">
@@ -299,16 +351,23 @@ function AlienCommandCenter() {
 
           <div ref={scrollRef} className="flex-1 overflow-auto space-y-3 pr-2 min-h-0">
             {messages.map((m, i) => (
-              <div key={i} className={"flex " + (m.role === "user" ? "justify-end" : "justify-start")}>
+              <div key={i} className={"flex group " + (m.role === "user" ? "justify-end" : "justify-start")}>
                 <div
                   className={
-                    "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap leading-relaxed " +
+                    "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap leading-relaxed relative " +
                     (m.role === "user"
                       ? "bg-gradient-to-br from-pink-500 to-fuchsia-600 text-white"
                       : "bg-white/10 border border-white/15 text-white")
                   }
                 >
                   {m.content}
+                  {m.role === "assistant" && (
+                    <div className="mt-1.5 flex gap-1 opacity-0 group-hover:opacity-100 transition">
+                      <button onClick={() => copyMsg(m.content)} className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 hover:bg-white/25 inline-flex items-center gap-1"><Copy className="h-2.5 w-2.5" />copy</button>
+                      <button onClick={() => speak(m.content)} className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 hover:bg-white/25 inline-flex items-center gap-1"><Volume2 className="h-2.5 w-2.5" />speak</button>
+                      <button onClick={() => send(`Expand on: "${m.content.slice(0, 120)}"`)} className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 hover:bg-white/25">↻ more</button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -325,13 +384,19 @@ function AlienCommandCenter() {
             onSubmit={(e) => { e.preventDefault(); send(); }}
             className="mt-3 flex gap-2"
           >
+            <Button type="button" onClick={toggleMic} title="Voice input" className={(listening ? "bg-red-500 hover:bg-red-400 animate-pulse" : "bg-white/10 hover:bg-white/20") + " border border-white/20 h-auto"}>
+              {listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+            </Button>
+            <Button type="button" onClick={() => setSpeakReplies((s) => !s)} title="Read replies aloud" className={(speakReplies ? "bg-emerald-500 hover:bg-emerald-400" : "bg-white/10 hover:bg-white/20") + " border border-white/20 h-auto"}>
+              {speakReplies ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+            </Button>
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
               }}
-              placeholder="Type a question or paste a number… (Enter to send)"
+              placeholder={listening ? "🎤 listening… speak now" : "Type, paste a number, or hit 🎤 (Enter to send)"}
               className="bg-white/10 border-white/20 text-white placeholder:text-white/40 resize-none min-h-[48px] max-h-32"
               rows={1}
             />
