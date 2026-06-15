@@ -126,6 +126,63 @@ function StrategistPage() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader><CardTitle>📞 Daily Appointment Reminders</CardTitle></CardHeader>
+        <CardContent className="flex flex-wrap items-end gap-6">
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={settings.data?.reminder_enabled ?? true}
+              onCheckedChange={(v) => saveSettings.mutate({ reminder_enabled: v } as any)}
+            />
+            <Label>Auto-send daily</Label>
+          </div>
+          <div>
+            <Label>Send at (UTC hour)</Label>
+            <Input
+              type="number" min={0} max={23}
+              defaultValue={settings.data?.reminder_hour ?? 9}
+              onBlur={(e) => saveSettings.mutate({ reminder_hour: parseInt(e.target.value, 10) } as any)}
+              className="w-24"
+            />
+          </div>
+          <div>
+            <Label>Lead time (hours)</Label>
+            <Input
+              type="number" min={1} max={168}
+              defaultValue={settings.data?.reminder_lead_hours ?? 24}
+              onBlur={(e) => saveSettings.mutate({ reminder_lead_hours: parseInt(e.target.value, 10) } as any)}
+              className="w-24"
+            />
+          </div>
+          <div>
+            <Label>Method</Label>
+            <select
+              className="block border rounded px-2 py-1 bg-background"
+              defaultValue={settings.data?.reminder_method ?? "queue_call"}
+              onChange={(e) => saveSettings.mutate({ reminder_method: e.target.value as any } as any)}
+            >
+              <option value="queue_call">Queue desk-phone call (click-to-dial)</option>
+              <option value="draft_sms">Draft SMS</option>
+              <option value="draft_email">Draft email</option>
+            </select>
+          </div>
+          <Button
+            variant="secondary"
+            onClick={async () => {
+              const fn = useServerFn(runRemindersNow);
+              await (runRemindersNow as any)({ data: {} });
+              toast.success("Reminder sweep queued");
+              qc.invalidateQueries({ queryKey: ["ai-actions"] });
+            }}
+          >
+            Run now
+          </Button>
+          <p className="text-xs text-muted-foreground w-full">
+            Alien scans bookings in the next N hours, drafts a personalized reminder script per customer, and drops them into the action queue. With a Yealink/Grandstream registered, each reminder becomes a one-click dial from your desk phone.
+          </p>
+        </CardContent>
+      </Card>
+
       <div className="grid lg:grid-cols-3 gap-6">
         <Section title={`Pending approval (${pending.length})`} icon={<AlertCircle className="h-5 w-5 text-amber-500" />}>
           {pending.length === 0 && <p className="text-sm text-muted-foreground">Nothing waiting.</p>}
