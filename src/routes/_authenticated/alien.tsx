@@ -212,7 +212,7 @@ function AlienCommandCenter() {
                   id: string; title: string; direction: string;
                   greeting?: string; qualifying_questions?: string; objection_handlers?: string;
                   closing?: string; full_script?: string;
-                  organizations?: { name?: string }; services?: { name?: string };
+                  organizations?: { name?: string } | null; services?: { name?: string } | null;
                 }) => (
                   <button
                     key={s.id}
