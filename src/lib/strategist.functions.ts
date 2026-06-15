@@ -86,10 +86,31 @@ export const updateAiSettings = createServerFn({ method: "POST" })
     cadence_minutes: z.number().int().min(1).max(1440).optional(),
     auto_run_on_new_lead: z.boolean().optional(),
     guidance: z.string().max(10000).optional(),
+    reminder_enabled: z.boolean().optional(),
+    reminder_hour: z.number().int().min(0).max(23).optional(),
+    reminder_minute: z.number().int().min(0).max(59).optional(),
+    reminder_method: z.enum(["queue_call", "draft_sms", "draft_email"]).optional(),
+    reminder_lead_hours: z.number().int().min(1).max(168).optional(),
   }).parse(i))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("ai_settings").update(data as never).eq("user_id", context.userId);
     if (error) throw error;
+    return { ok: true };
+  });
+
+export const runRemindersNow = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const url = `${process.env.SUPABASE_URL?.replace("supabase.co", "lovable.app") ?? ""}`;
+    // call the hook directly with force flag
+    const base = typeof globalThis !== "undefined" && (globalThis as any).location?.origin
+      ? (globalThis as any).location.origin
+      : "https://project--9b78cea6-667a-48ea-9a20-df47d8f6cc28.lovable.app";
+    await fetch(`${base}/api/public/hooks/daily-reminders?force=1&owner_id=${context.userId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    });
     return { ok: true };
   });
