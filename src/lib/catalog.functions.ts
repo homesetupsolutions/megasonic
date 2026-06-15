@@ -196,7 +196,7 @@ export const approveChangeRequest = createServerFn({ method: "POST" })
     }
 
     // Broadcast as event so linked projects see it via /api/public/catalog
-    await supabase.from("events").insert({
+    await (supabase.from("events").insert as any)({
       owner_id: userId,
       project_id: null,
       type: "catalog.updated",
