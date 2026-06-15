@@ -18,6 +18,7 @@ import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedScriptsRouteImport } from './routes/_authenticated/scripts'
 import { Route as AuthenticatedQuickBookRouteImport } from './routes/_authenticated/quick-book'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
+import { Route as AuthenticatedPhonesRouteImport } from './routes/_authenticated/phones'
 import { Route as AuthenticatedLeadsRouteImport } from './routes/_authenticated/leads'
 import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authenticated/knowledge'
 import { Route as AuthenticatedInvestorsRouteImport } from './routes/_authenticated/investors'
@@ -84,6 +85,11 @@ const AuthenticatedQuickBookRoute = AuthenticatedQuickBookRouteImport.update({
 const AuthenticatedProjectsRoute = AuthenticatedProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPhonesRoute = AuthenticatedPhonesRouteImport.update({
+  id: '/phones',
+  path: '/phones',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedLeadsRoute = AuthenticatedLeadsRouteImport.update({
@@ -224,6 +230,7 @@ export interface FileRoutesByFullPath {
   '/investors': typeof AuthenticatedInvestorsRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/leads': typeof AuthenticatedLeadsRoute
+  '/phones': typeof AuthenticatedPhonesRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/quick-book': typeof AuthenticatedQuickBookRoute
   '/scripts': typeof AuthenticatedScriptsRoute
@@ -257,6 +264,7 @@ export interface FileRoutesByTo {
   '/investors': typeof AuthenticatedInvestorsRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/leads': typeof AuthenticatedLeadsRoute
+  '/phones': typeof AuthenticatedPhonesRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/quick-book': typeof AuthenticatedQuickBookRoute
   '/scripts': typeof AuthenticatedScriptsRoute
@@ -292,6 +300,7 @@ export interface FileRoutesById {
   '/_authenticated/investors': typeof AuthenticatedInvestorsRoute
   '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute
   '/_authenticated/leads': typeof AuthenticatedLeadsRoute
+  '/_authenticated/phones': typeof AuthenticatedPhonesRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/quick-book': typeof AuthenticatedQuickBookRoute
   '/_authenticated/scripts': typeof AuthenticatedScriptsRoute
@@ -327,6 +336,7 @@ export interface FileRouteTypes {
     | '/investors'
     | '/knowledge'
     | '/leads'
+    | '/phones'
     | '/projects'
     | '/quick-book'
     | '/scripts'
@@ -360,6 +370,7 @@ export interface FileRouteTypes {
     | '/investors'
     | '/knowledge'
     | '/leads'
+    | '/phones'
     | '/projects'
     | '/quick-book'
     | '/scripts'
@@ -394,6 +405,7 @@ export interface FileRouteTypes {
     | '/_authenticated/investors'
     | '/_authenticated/knowledge'
     | '/_authenticated/leads'
+    | '/_authenticated/phones'
     | '/_authenticated/projects'
     | '/_authenticated/quick-book'
     | '/_authenticated/scripts'
@@ -487,6 +499,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof AuthenticatedProjectsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/phones': {
+      id: '/_authenticated/phones'
+      path: '/phones'
+      fullPath: '/phones'
+      preLoaderRoute: typeof AuthenticatedPhonesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/leads': {
@@ -669,6 +688,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedInvestorsRoute: typeof AuthenticatedInvestorsRoute
   AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute
   AuthenticatedLeadsRoute: typeof AuthenticatedLeadsRoute
+  AuthenticatedPhonesRoute: typeof AuthenticatedPhonesRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
   AuthenticatedQuickBookRoute: typeof AuthenticatedQuickBookRoute
   AuthenticatedScriptsRoute: typeof AuthenticatedScriptsRoute
@@ -693,6 +713,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedInvestorsRoute: AuthenticatedInvestorsRoute,
   AuthenticatedKnowledgeRoute: AuthenticatedKnowledgeRoute,
   AuthenticatedLeadsRoute: AuthenticatedLeadsRoute,
+  AuthenticatedPhonesRoute: AuthenticatedPhonesRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
   AuthenticatedQuickBookRoute: AuthenticatedQuickBookRoute,
   AuthenticatedScriptsRoute: AuthenticatedScriptsRoute,
