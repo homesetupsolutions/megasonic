@@ -237,6 +237,41 @@ export function AlienHud({
     }
   }, [stage, addPop]);
 
+  // Monthly rebirth — on the 1st of each month the alien becomes an egg
+  // again with a brand-new randomly-chosen species. Checked on mount + hourly.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const check = () => {
+      const epoch = getMonthEpoch();
+      const stored = localStorage.getItem("alien.epoch");
+      if (!stored) {
+        localStorage.setItem("alien.epoch", epoch);
+        if (!localStorage.getItem("alien.typeId")) {
+          const t = randomType();
+          localStorage.setItem("alien.typeId", t.id);
+          setTypeId(t.id);
+        }
+        return;
+      }
+      if (stored !== epoch) {
+        // REBIRTH! Reset xp baseline + bonus, reroll species, drop to egg
+        localStorage.setItem("alien.epoch", epoch);
+        const t = randomType(localStorage.getItem("alien.typeId") || undefined);
+        setBaseline(stats.executed);
+        setBonusXp(0);
+        setTypeId(t.id);
+        addPop(`🥚 REBIRTH → ${t.name} ${t.emoji}!`, 50);
+        for (let i = 0; i < 14; i++) {
+          setTimeout(() => addPop(["✨","🌈","🥚","💫"][i % 4], Math.random() * 90, Math.random() * 60), i * 120);
+        }
+      }
+    };
+    check();
+    const id = setInterval(check, 60 * 60 * 1000);
+    return () => clearInterval(id);
+  }, [stats.executed, addPop]);
+
+
   const lastTitle = actions[0]?.title;
   const [teach, setTeach] = useState("");
 
