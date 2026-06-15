@@ -178,7 +178,13 @@ export type Database = {
           created_at: string
           enabled: boolean
           guidance: string | null
+          last_reminders_date: string | null
           last_run_at: string | null
+          reminder_enabled: boolean
+          reminder_hour: number
+          reminder_lead_hours: number
+          reminder_method: string
+          reminder_minute: number
           updated_at: string
           user_id: string
         }
@@ -188,7 +194,13 @@ export type Database = {
           created_at?: string
           enabled?: boolean
           guidance?: string | null
+          last_reminders_date?: string | null
           last_run_at?: string | null
+          reminder_enabled?: boolean
+          reminder_hour?: number
+          reminder_lead_hours?: number
+          reminder_method?: string
+          reminder_minute?: number
           updated_at?: string
           user_id: string
         }
@@ -198,7 +210,13 @@ export type Database = {
           created_at?: string
           enabled?: boolean
           guidance?: string | null
+          last_reminders_date?: string | null
           last_run_at?: string | null
+          reminder_enabled?: boolean
+          reminder_hour?: number
+          reminder_lead_hours?: number
+          reminder_method?: string
+          reminder_minute?: number
           updated_at?: string
           user_id?: string
         }
