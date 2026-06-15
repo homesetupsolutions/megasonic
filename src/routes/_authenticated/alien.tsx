@@ -255,6 +255,8 @@ function AlienCommandCenter() {
             )}
           </Card>
 
+          {!expanded && (<>
+
           <Card className="bg-black/40 border-white/10 backdrop-blur p-4 space-y-3">
             <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-cyan-300">
               <ScrollText className="h-4 w-4" /> Call Scripts
@@ -331,9 +333,10 @@ function AlienCommandCenter() {
               </div>
             </ScrollArea>
           </Card>
+          </>)}
         </div>
 
-        {/* RIGHT — Chat (spans 2 cols) */}
+        {!expanded && (
         <Card className="lg:col-span-2 bg-black/40 border-white/10 backdrop-blur p-4 flex flex-col" style={{ minHeight: 600 }}>
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="h-4 w-4 text-pink-300" />
