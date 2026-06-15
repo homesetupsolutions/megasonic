@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Plus, Pencil, Trash2, Phone, Copy, CheckCircle2 } from "lucide-react";
+import { ScriptPlayer } from "@/components/ScriptPlayer";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/scripts")({ component: ScriptsPage });
@@ -130,7 +131,8 @@ function ScriptCard({ script, orgs }: { script: Script; orgs: Org[] }) {
             {script.services?.name && <Badge variant="outline">{script.services.name}</Badge>}
           </CardTitle>
         </div>
-        <div className="flex gap-1 shrink-0">
+        <div className="flex gap-1 shrink-0 items-center">
+          <ScriptPlayer script={script} />
           <Button variant="ghost" size="sm" onClick={copyAll} aria-label="Copy script">
             <Copy className="h-4 w-4" />
           </Button>
