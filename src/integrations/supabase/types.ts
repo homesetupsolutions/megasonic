@@ -346,6 +346,59 @@ export type Database = {
           },
         ]
       }
+      external_connections: {
+        Row: {
+          config: Json
+          created_at: string
+          id: string
+          label: string | null
+          last_synced_at: string | null
+          notes: string | null
+          organization_id: string | null
+          owner_id: string
+          provider: string
+          secrets_ref: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          id?: string
+          label?: string | null
+          last_synced_at?: string | null
+          notes?: string | null
+          organization_id?: string | null
+          owner_id: string
+          provider: string
+          secrets_ref?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          id?: string
+          label?: string | null
+          last_synced_at?: string | null
+          notes?: string | null
+          organization_id?: string | null
+          owner_id?: string
+          provider?: string
+          secrets_ref?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "external_connections_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       grants: {
         Row: {
           amount: string | null
@@ -858,6 +911,36 @@ export type Database = {
         }
         Relationships: []
       }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          owner_id: string
+          p256dh: string
+          user_agent: string | null
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          owner_id: string
+          p256dh: string
+          user_agent?: string | null
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          owner_id?: string
+          p256dh?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           active: boolean
@@ -866,12 +949,14 @@ export type Database = {
           description: string | null
           duration_minutes: number | null
           id: string
+          imported_from_square: boolean
           name: string
           organization_id: string
           owner_id: string
           price_cents: number
           sku: string | null
           square_catalog_id: string | null
+          square_location_id: string | null
           updated_at: string
           version: number
         }
@@ -882,12 +967,14 @@ export type Database = {
           description?: string | null
           duration_minutes?: number | null
           id?: string
+          imported_from_square?: boolean
           name: string
           organization_id: string
           owner_id: string
           price_cents?: number
           sku?: string | null
           square_catalog_id?: string | null
+          square_location_id?: string | null
           updated_at?: string
           version?: number
         }
@@ -898,18 +985,70 @@ export type Database = {
           description?: string | null
           duration_minutes?: number | null
           id?: string
+          imported_from_square?: boolean
           name?: string
           organization_id?: string
           owner_id?: string
           price_cents?: number
           sku?: string | null
           square_catalog_id?: string | null
+          square_location_id?: string | null
           updated_at?: string
           version?: number
         }
         Relationships: [
           {
             foreignKeyName: "services_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      square_locations: {
+        Row: {
+          address: string | null
+          created_at: string
+          currency: string | null
+          id: string
+          name: string
+          organization_id: string | null
+          owner_id: string
+          raw: Json | null
+          square_location_id: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          name: string
+          organization_id?: string | null
+          owner_id: string
+          raw?: Json | null
+          square_location_id: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          name?: string
+          organization_id?: string | null
+          owner_id?: string
+          raw?: Json | null
+          square_location_id?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "square_locations_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -961,6 +1100,71 @@ export type Database = {
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      voice_calls: {
+        Row: {
+          ai_intent: string | null
+          ai_summary: string | null
+          created_at: string
+          direction: string
+          duration_seconds: number | null
+          from_number: string | null
+          id: string
+          organization_id: string | null
+          owner_id: string
+          proposed_booking: Json | null
+          raw: Json | null
+          recording_url: string | null
+          status: string
+          to_number: string | null
+          transcript: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_intent?: string | null
+          ai_summary?: string | null
+          created_at?: string
+          direction?: string
+          duration_seconds?: number | null
+          from_number?: string | null
+          id?: string
+          organization_id?: string | null
+          owner_id: string
+          proposed_booking?: Json | null
+          raw?: Json | null
+          recording_url?: string | null
+          status?: string
+          to_number?: string | null
+          transcript?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_intent?: string | null
+          ai_summary?: string | null
+          created_at?: string
+          direction?: string
+          duration_seconds?: number | null
+          from_number?: string | null
+          id?: string
+          organization_id?: string | null
+          owner_id?: string
+          proposed_booking?: Json | null
+          raw?: Json | null
+          recording_url?: string | null
+          status?: string
+          to_number?: string | null
+          transcript?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voice_calls_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
