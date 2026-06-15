@@ -86,6 +86,27 @@ export const Route = createFileRoute("/api/public/ingest")({
               status: p.status ?? "available",
               last_event_at: new Date().toISOString(),
             });
+          } else if (t === "booking" || t === "booking.created") {
+            // Project must be assigned to an org for bookings to fan out
+            const { data: proj2 } = await supabaseAdmin
+              .from("linked_projects")
+              .select("organization_id")
+              .eq("id", project.id)
+              .maybeSingle();
+            if (proj2?.organization_id) {
+              await supabaseAdmin.from("bookings").insert({
+                owner_id: project.owner_id,
+                organization_id: proj2.organization_id,
+                service_id: p.service_id ?? null,
+                customer_name: String(p.customer_name ?? p.name ?? "Customer"),
+                customer_email: p.customer_email ?? p.email ?? null,
+                customer_phone: p.customer_phone ?? p.phone ?? null,
+                scheduled_at: p.scheduled_at ?? new Date().toISOString(),
+                duration_minutes: p.duration_minutes ?? null,
+                notes: p.notes ?? null,
+                source: "project",
+              });
+            }
           }
 
           await supabaseAdmin
