@@ -18,6 +18,7 @@ import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedScriptsRouteImport } from './routes/_authenticated/scripts'
 import { Route as AuthenticatedQuickBookRouteImport } from './routes/_authenticated/quick-book'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
+import { Route as AuthenticatedPhonesRouteImport } from './routes/_authenticated/phones'
 import { Route as AuthenticatedLeadsRouteImport } from './routes/_authenticated/leads'
 import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authenticated/knowledge'
 import { Route as AuthenticatedInvestorsRouteImport } from './routes/_authenticated/investors'
@@ -36,6 +37,8 @@ import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticat
 import { Route as ApiPublicIngestRouteImport } from './routes/api/public/ingest'
 import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
 import { Route as ApiPublicAllRouteImport } from './routes/api/public/all'
+import { Route as ApiPublicProvisionFileRouteImport } from './routes/api/public/provision/$file'
+import { Route as ApiPublicHooksYealinkCdrRouteImport } from './routes/api/public/hooks/yealink-cdr'
 import { Route as ApiPublicHooksVoiceCallRouteImport } from './routes/api/public/hooks/voice-call'
 import { Route as ApiPublicHooksStrategistRouteImport } from './routes/api/public/hooks/strategist'
 import { Route as ApiPublicHooksDailySocialRouteImport } from './routes/api/public/hooks/daily-social'
@@ -82,6 +85,11 @@ const AuthenticatedQuickBookRoute = AuthenticatedQuickBookRouteImport.update({
 const AuthenticatedProjectsRoute = AuthenticatedProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPhonesRoute = AuthenticatedPhonesRouteImport.update({
+  id: '/phones',
+  path: '/phones',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedLeadsRoute = AuthenticatedLeadsRouteImport.update({
@@ -175,6 +183,17 @@ const ApiPublicAllRoute = ApiPublicAllRouteImport.update({
   path: '/api/public/all',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicProvisionFileRoute = ApiPublicProvisionFileRouteImport.update({
+  id: '/api/public/provision/$file',
+  path: '/api/public/provision/$file',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHooksYealinkCdrRoute =
+  ApiPublicHooksYealinkCdrRouteImport.update({
+    id: '/api/public/hooks/yealink-cdr',
+    path: '/api/public/hooks/yealink-cdr',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksVoiceCallRoute = ApiPublicHooksVoiceCallRouteImport.update({
   id: '/api/public/hooks/voice-call',
   path: '/api/public/hooks/voice-call',
@@ -211,6 +230,7 @@ export interface FileRoutesByFullPath {
   '/investors': typeof AuthenticatedInvestorsRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/leads': typeof AuthenticatedLeadsRoute
+  '/phones': typeof AuthenticatedPhonesRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/quick-book': typeof AuthenticatedQuickBookRoute
   '/scripts': typeof AuthenticatedScriptsRoute
@@ -223,6 +243,8 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/daily-social': typeof ApiPublicHooksDailySocialRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
   '/api/public/hooks/voice-call': typeof ApiPublicHooksVoiceCallRoute
+  '/api/public/hooks/yealink-cdr': typeof ApiPublicHooksYealinkCdrRoute
+  '/api/public/provision/$file': typeof ApiPublicProvisionFileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -242,6 +264,7 @@ export interface FileRoutesByTo {
   '/investors': typeof AuthenticatedInvestorsRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/leads': typeof AuthenticatedLeadsRoute
+  '/phones': typeof AuthenticatedPhonesRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/quick-book': typeof AuthenticatedQuickBookRoute
   '/scripts': typeof AuthenticatedScriptsRoute
@@ -254,6 +277,8 @@ export interface FileRoutesByTo {
   '/api/public/hooks/daily-social': typeof ApiPublicHooksDailySocialRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
   '/api/public/hooks/voice-call': typeof ApiPublicHooksVoiceCallRoute
+  '/api/public/hooks/yealink-cdr': typeof ApiPublicHooksYealinkCdrRoute
+  '/api/public/provision/$file': typeof ApiPublicProvisionFileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -275,6 +300,7 @@ export interface FileRoutesById {
   '/_authenticated/investors': typeof AuthenticatedInvestorsRoute
   '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute
   '/_authenticated/leads': typeof AuthenticatedLeadsRoute
+  '/_authenticated/phones': typeof AuthenticatedPhonesRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/quick-book': typeof AuthenticatedQuickBookRoute
   '/_authenticated/scripts': typeof AuthenticatedScriptsRoute
@@ -287,6 +313,8 @@ export interface FileRoutesById {
   '/api/public/hooks/daily-social': typeof ApiPublicHooksDailySocialRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
   '/api/public/hooks/voice-call': typeof ApiPublicHooksVoiceCallRoute
+  '/api/public/hooks/yealink-cdr': typeof ApiPublicHooksYealinkCdrRoute
+  '/api/public/provision/$file': typeof ApiPublicProvisionFileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -308,6 +336,7 @@ export interface FileRouteTypes {
     | '/investors'
     | '/knowledge'
     | '/leads'
+    | '/phones'
     | '/projects'
     | '/quick-book'
     | '/scripts'
@@ -320,6 +349,8 @@ export interface FileRouteTypes {
     | '/api/public/hooks/daily-social'
     | '/api/public/hooks/strategist'
     | '/api/public/hooks/voice-call'
+    | '/api/public/hooks/yealink-cdr'
+    | '/api/public/provision/$file'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -339,6 +370,7 @@ export interface FileRouteTypes {
     | '/investors'
     | '/knowledge'
     | '/leads'
+    | '/phones'
     | '/projects'
     | '/quick-book'
     | '/scripts'
@@ -351,6 +383,8 @@ export interface FileRouteTypes {
     | '/api/public/hooks/daily-social'
     | '/api/public/hooks/strategist'
     | '/api/public/hooks/voice-call'
+    | '/api/public/hooks/yealink-cdr'
+    | '/api/public/provision/$file'
   id:
     | '__root__'
     | '/'
@@ -371,6 +405,7 @@ export interface FileRouteTypes {
     | '/_authenticated/investors'
     | '/_authenticated/knowledge'
     | '/_authenticated/leads'
+    | '/_authenticated/phones'
     | '/_authenticated/projects'
     | '/_authenticated/quick-book'
     | '/_authenticated/scripts'
@@ -383,6 +418,8 @@ export interface FileRouteTypes {
     | '/api/public/hooks/daily-social'
     | '/api/public/hooks/strategist'
     | '/api/public/hooks/voice-call'
+    | '/api/public/hooks/yealink-cdr'
+    | '/api/public/provision/$file'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -395,6 +432,8 @@ export interface RootRouteChildren {
   ApiPublicHooksDailySocialRoute: typeof ApiPublicHooksDailySocialRoute
   ApiPublicHooksStrategistRoute: typeof ApiPublicHooksStrategistRoute
   ApiPublicHooksVoiceCallRoute: typeof ApiPublicHooksVoiceCallRoute
+  ApiPublicHooksYealinkCdrRoute: typeof ApiPublicHooksYealinkCdrRoute
+  ApiPublicProvisionFileRoute: typeof ApiPublicProvisionFileRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -460,6 +499,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof AuthenticatedProjectsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/phones': {
+      id: '/_authenticated/phones'
+      path: '/phones'
+      fullPath: '/phones'
+      preLoaderRoute: typeof AuthenticatedPhonesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/leads': {
@@ -588,6 +634,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicAllRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/provision/$file': {
+      id: '/api/public/provision/$file'
+      path: '/api/public/provision/$file'
+      fullPath: '/api/public/provision/$file'
+      preLoaderRoute: typeof ApiPublicProvisionFileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/yealink-cdr': {
+      id: '/api/public/hooks/yealink-cdr'
+      path: '/api/public/hooks/yealink-cdr'
+      fullPath: '/api/public/hooks/yealink-cdr'
+      preLoaderRoute: typeof ApiPublicHooksYealinkCdrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/voice-call': {
       id: '/api/public/hooks/voice-call'
       path: '/api/public/hooks/voice-call'
@@ -628,6 +688,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedInvestorsRoute: typeof AuthenticatedInvestorsRoute
   AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute
   AuthenticatedLeadsRoute: typeof AuthenticatedLeadsRoute
+  AuthenticatedPhonesRoute: typeof AuthenticatedPhonesRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
   AuthenticatedQuickBookRoute: typeof AuthenticatedQuickBookRoute
   AuthenticatedScriptsRoute: typeof AuthenticatedScriptsRoute
@@ -652,6 +713,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedInvestorsRoute: AuthenticatedInvestorsRoute,
   AuthenticatedKnowledgeRoute: AuthenticatedKnowledgeRoute,
   AuthenticatedLeadsRoute: AuthenticatedLeadsRoute,
+  AuthenticatedPhonesRoute: AuthenticatedPhonesRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
   AuthenticatedQuickBookRoute: AuthenticatedQuickBookRoute,
   AuthenticatedScriptsRoute: AuthenticatedScriptsRoute,
@@ -673,6 +735,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksDailySocialRoute: ApiPublicHooksDailySocialRoute,
   ApiPublicHooksStrategistRoute: ApiPublicHooksStrategistRoute,
   ApiPublicHooksVoiceCallRoute: ApiPublicHooksVoiceCallRoute,
+  ApiPublicHooksYealinkCdrRoute: ApiPublicHooksYealinkCdrRoute,
+  ApiPublicProvisionFileRoute: ApiPublicProvisionFileRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
