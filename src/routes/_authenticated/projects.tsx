@@ -36,9 +36,17 @@ function ProjectsPage() {
   const { data: projects } = useQuery({ queryKey: ["projects"], queryFn: () => listFn() });
   const { data: orgs } = useQuery<any[]>({ queryKey: ["orgs"], queryFn: () => orgsFn() as any });
   const [newKey, setNewKey] = useState<{ name: string; key: string } | null>(null);
+  const [bulkKeys, setBulkKeys] = useState<Array<{ name: string; key: string; url: string }> | null>(null);
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [open, setOpen] = useState(false);
+
+  const PRESETS: Array<{ name: string; url: string; orgHint: "feelbass" | "hss" | null }> = [
+    { name: "FeelBass VIP", url: "https://feelbassvip.lovable.app", orgHint: "feelbass" },
+    { name: "FeelBass POS", url: "https://feelbasspos.lovable.app", orgHint: "feelbass" },
+    { name: "Home Setup Solutions", url: "https://homesetupsolutions.ca", orgHint: "hss" },
+    { name: "Feel The City", url: "https://feelthecity.lovable.app", orgHint: "feelbass" },
+  ];
 
   const create = useMutation({
     mutationFn: (input: { name: string; url?: string }) => createFn({ data: input }),
@@ -48,6 +56,36 @@ function ProjectsPage() {
       setName("");
       setUrl("");
       setOpen(false);
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const quickAdd = useMutation({
+    mutationFn: async () => {
+      const existing = new Set(((projects as any[]) ?? []).map((p) => (p.url || "").replace(/\/$/, "")));
+      const orgList = (orgs as any[]) ?? [];
+      const findOrg = (hint: string | null) => {
+        if (!hint) return null;
+        const o = orgList.find((x) =>
+          (x.slug || "").toLowerCase().includes(hint) ||
+          (x.name || "").toLowerCase().includes(hint),
+        );
+        return o?.id ?? null;
+      };
+      const results: Array<{ name: string; key: string; url: string }> = [];
+      for (const p of PRESETS) {
+        if (existing.has(p.url.replace(/\/$/, ""))) continue;
+        const res: any = await createFn({ data: { name: p.name, url: p.url } });
+        results.push({ name: p.name, key: res.apiKey, url: p.url });
+        const orgId = findOrg(p.orgHint);
+        if (orgId) await assignFn({ data: { id: res.project.id, organization_id: orgId } });
+      }
+      return results;
+    },
+    onSuccess: (results) => {
+      qc.invalidateQueries({ queryKey: ["projects"] });
+      if (!results.length) toast.info("All your apps are already linked.");
+      else setBulkKeys(results);
     },
     onError: (e: any) => toast.error(e.message),
   });
@@ -82,14 +120,24 @@ function ProjectsPage() {
             services, and call scripts. Three steps below.
           </p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button size="lg" className="h-12"><Plus className="h-5 w-5 mr-2" /> Link a project</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Link a Lovable project</DialogTitle>
-            </DialogHeader>
+        <div className="flex items-center gap-2">
+          <Button
+            size="lg"
+            variant="secondary"
+            className="h-12"
+            disabled={quickAdd.isPending}
+            onClick={() => quickAdd.mutate()}
+          >
+            {quickAdd.isPending ? "Linking…" : "Quick-add my 4 apps"}
+          </Button>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button size="lg" className="h-12"><Plus className="h-5 w-5 mr-2" /> Link a project</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Link a Lovable project</DialogTitle>
+              </DialogHeader>
             <div className="space-y-3">
               <div className="space-y-2">
                 <Label>Project name</Label>
@@ -107,6 +155,7 @@ function ProjectsPage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       <Card className="bg-muted/40">
@@ -171,6 +220,7 @@ function ProjectsPage() {
       </div>
 
       <KeyModal data={newKey} onClose={() => setNewKey(null)} />
+      <BulkKeysModal data={bulkKeys} onClose={() => setBulkKeys(null)} />
     </div>
   );
 }
@@ -245,6 +295,41 @@ export const magasonic = {
             }}
           >
             <Copy className="h-4 w-4 mr-2" /> Copy snippet
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function BulkKeysModal({
+  data,
+  onClose,
+}: {
+  data: Array<{ name: string; key: string; url: string }> | null;
+  onClose: () => void;
+}) {
+  if (!data) return null;
+  const text = data.map((d) => `${d.name} (${d.url})\nHUB_KEY=${d.key}`).join("\n\n");
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Your project keys ({data.length})</DialogTitle>
+        </DialogHeader>
+        <p className="text-sm text-muted-foreground">
+          Each key shows ONCE. Copy this list now — paste into each app's
+          <code> src/lib/magasonic-client.ts</code> as the <code>HUB_KEY</code>. Rotate any time from this page.
+        </p>
+        <pre className="bg-muted text-xs rounded p-3 overflow-auto max-h-96"><code>{text}</code></pre>
+        <DialogFooter>
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(text);
+              toast.success("Copied all keys");
+            }}
+          >
+            <Copy className="h-4 w-4 mr-2" /> Copy all
           </Button>
         </DialogFooter>
       </DialogContent>
