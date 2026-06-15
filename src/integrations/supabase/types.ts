@@ -1108,6 +1108,7 @@ export type Database = {
         Row: {
           ai_intent: string | null
           ai_summary: string | null
+          booking_id: string | null
           created_at: string
           direction: string
           duration_seconds: number | null
@@ -1118,6 +1119,7 @@ export type Database = {
           proposed_booking: Json | null
           raw: Json | null
           recording_url: string | null
+          started_at: string | null
           status: string
           to_number: string | null
           transcript: string | null
@@ -1126,6 +1128,7 @@ export type Database = {
         Insert: {
           ai_intent?: string | null
           ai_summary?: string | null
+          booking_id?: string | null
           created_at?: string
           direction?: string
           duration_seconds?: number | null
@@ -1136,6 +1139,7 @@ export type Database = {
           proposed_booking?: Json | null
           raw?: Json | null
           recording_url?: string | null
+          started_at?: string | null
           status?: string
           to_number?: string | null
           transcript?: string | null
@@ -1144,6 +1148,7 @@ export type Database = {
         Update: {
           ai_intent?: string | null
           ai_summary?: string | null
+          booking_id?: string | null
           created_at?: string
           direction?: string
           duration_seconds?: number | null
@@ -1154,12 +1159,20 @@ export type Database = {
           proposed_booking?: Json | null
           raw?: Json | null
           recording_url?: string | null
+          started_at?: string | null
           status?: string
           to_number?: string | null
           transcript?: string | null
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "voice_calls_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "voice_calls_organization_id_fkey"
             columns: ["organization_id"]
