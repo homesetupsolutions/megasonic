@@ -74,39 +74,49 @@ function ProjectsPage() {
 
   return (
     <div className="space-y-6 max-w-5xl">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="min-w-0">
           <h1 className="text-3xl font-bold">Linked Projects</h1>
           <p className="text-muted-foreground">
-            Each linked Lovable project gets a key. Drop the snippet into the project and it streams events to the hub.
+            Plug your other Lovable apps into this hub so they all share leads, bookings, customers,
+            services, and call scripts. Three steps below.
           </p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button><Plus className="h-4 w-4 mr-2" /> New project</Button>
+            <Button size="lg" className="h-12"><Plus className="h-5 w-5 mr-2" /> Link a project</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Link a project</DialogTitle>
+              <DialogTitle>Link a Lovable project</DialogTitle>
             </DialogHeader>
             <div className="space-y-3">
               <div className="space-y-2">
-                <Label>Name</Label>
+                <Label>Project name</Label>
                 <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="FeelBass POS" />
               </div>
               <div className="space-y-2">
-                <Label>URL (optional)</Label>
+                <Label>URL (optional, helps me find it later)</Label>
                 <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://feelbasspos.lovable.app" />
               </div>
             </div>
             <DialogFooter>
               <Button disabled={!name || create.isPending} onClick={() => create.mutate({ name, url })}>
-                Create
+                Generate key
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
+
+      <Card className="bg-muted/40">
+        <CardContent className="py-4 text-sm space-y-1">
+          <div className="font-semibold">How to link a project (1 minute)</div>
+          <div>1. Click <strong>Link a project</strong>, name it, and copy the snippet.</div>
+          <div>2. In the other Lovable project, save the snippet as <code>src/lib/magasonic-client.ts</code>.</div>
+          <div>3. Back here, assign it to a business (FeelBass or HSS). Done — data flows both ways.</div>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-3">
         {projects?.map((p: any) => (
@@ -173,6 +183,7 @@ const HUB = "${origin}";
 const HUB_KEY = "${data.key}"; // shown once. Rotate from MagaSonic → Projects.
 
 export const magasonic = {
+  // Send something INTO the hub
   emit: (type: string, payload: Record<string, any> = {}) =>
     fetch(HUB + "/api/public/ingest", {
       method: "POST",
@@ -188,7 +199,21 @@ export const magasonic = {
     magasonic.emit("inventory", p),
   booking: (p: { customer_name: string; service_id?: string; scheduled_at: string; customer_email?: string; customer_phone?: string; notes?: string }) =>
     magasonic.emit("booking", p),
-  // Live master catalog (services + prices). Call on app start + when "catalog.updated" is broadcast.
+
+  // PULL everything from the hub (services + bookings + leads + customers + ideas + call scripts)
+  // include: comma-separated list. Default = all.
+  all: async (include?: string) => {
+    const q = new URLSearchParams({ key: HUB_KEY });
+    if (include) q.set("include", include);
+    const r = await fetch(HUB + "/api/public/all?" + q.toString(), { cache: "no-store" });
+    if (!r.ok) throw new Error("all: " + r.status);
+    return await r.json() as {
+      project_id: string; organization_id: string | null; fetched_at: string;
+      services?: any[]; bookings?: any[]; leads?: any[]; customers?: any[]; ideas?: any[]; scripts?: any[];
+    };
+  },
+
+  // Just the live catalog (services + prices). Call on app start + when "catalog.updated" is broadcast.
   catalog: async () => {
     const r = await fetch(HUB + "/api/public/catalog?key=" + encodeURIComponent(HUB_KEY), { cache: "no-store" });
     if (!r.ok) throw new Error("catalog: " + r.status);
@@ -207,7 +232,9 @@ export const magasonic = {
           <DialogTitle>Snippet for {data.name}</DialogTitle>
         </DialogHeader>
         <p className="text-sm text-muted-foreground">
-          Save in your other Lovable project as <code>src/lib/magasonic-client.ts</code>. Call <code>magasonic.catalog()</code> for live prices, <code>magasonic.lead(&#123;...&#125;)</code>, <code>magasonic.booking(&#123;...&#125;)</code>, etc. The key shows ONCE — copy it now.
+          Paste into your other Lovable project as <code>src/lib/magasonic-client.ts</code>. Then call{" "}
+          <code>magasonic.all()</code> to pull every business asset, or <code>magasonic.lead(&#123;...&#125;)</code> /{" "}
+          <code>magasonic.booking(&#123;...&#125;)</code> to push data back. The key shows ONCE — copy it now.
         </p>
         <pre className="bg-muted text-xs rounded p-3 overflow-auto max-h-96"><code>{snippet}</code></pre>
         <DialogFooter>

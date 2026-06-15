@@ -34,6 +34,7 @@ import { Route as AuthenticatedApprovalsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as ApiPublicIngestRouteImport } from './routes/api/public/ingest'
 import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
+import { Route as ApiPublicAllRouteImport } from './routes/api/public/all'
 import { Route as ApiPublicHooksVoiceCallRouteImport } from './routes/api/public/hooks/voice-call'
 import { Route as ApiPublicHooksStrategistRouteImport } from './routes/api/public/hooks/strategist'
 
@@ -162,6 +163,11 @@ const ApiPublicCatalogRoute = ApiPublicCatalogRouteImport.update({
   path: '/api/public/catalog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicAllRoute = ApiPublicAllRouteImport.update({
+  id: '/api/public/all',
+  path: '/api/public/all',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksVoiceCallRoute = ApiPublicHooksVoiceCallRouteImport.update({
   id: '/api/public/hooks/voice-call',
   path: '/api/public/hooks/voice-call',
@@ -197,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/strategist': typeof AuthenticatedStrategistRoute
+  '/api/public/all': typeof ApiPublicAllRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
@@ -225,6 +232,7 @@ export interface FileRoutesByTo {
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/strategist': typeof AuthenticatedStrategistRoute
+  '/api/public/all': typeof ApiPublicAllRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
@@ -255,6 +263,7 @@ export interface FileRoutesById {
   '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/strategist': typeof AuthenticatedStrategistRoute
+  '/api/public/all': typeof ApiPublicAllRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
@@ -285,6 +294,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/settings'
     | '/strategist'
+    | '/api/public/all'
     | '/api/public/catalog'
     | '/api/public/ingest'
     | '/api/public/hooks/strategist'
@@ -313,6 +323,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/settings'
     | '/strategist'
+    | '/api/public/all'
     | '/api/public/catalog'
     | '/api/public/ingest'
     | '/api/public/hooks/strategist'
@@ -342,6 +353,7 @@ export interface FileRouteTypes {
     | '/_authenticated/services'
     | '/_authenticated/settings'
     | '/_authenticated/strategist'
+    | '/api/public/all'
     | '/api/public/catalog'
     | '/api/public/ingest'
     | '/api/public/hooks/strategist'
@@ -352,6 +364,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ApiPublicAllRoute: typeof ApiPublicAllRoute
   ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
   ApiPublicIngestRoute: typeof ApiPublicIngestRoute
   ApiPublicHooksStrategistRoute: typeof ApiPublicHooksStrategistRoute
@@ -535,6 +548,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCatalogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/all': {
+      id: '/api/public/all'
+      path: '/api/public/all'
+      fullPath: '/api/public/all'
+      preLoaderRoute: typeof ApiPublicAllRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/voice-call': {
       id: '/api/public/hooks/voice-call'
       path: '/api/public/hooks/voice-call'
@@ -605,6 +625,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ApiPublicAllRoute: ApiPublicAllRoute,
   ApiPublicCatalogRoute: ApiPublicCatalogRoute,
   ApiPublicIngestRoute: ApiPublicIngestRoute,
   ApiPublicHooksStrategistRoute: ApiPublicHooksStrategistRoute,

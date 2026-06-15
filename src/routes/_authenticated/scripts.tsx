@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Plus, Pencil, Trash2, Phone, Copy, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ type Script = {
   organization_id: string;
   service_id: string | null;
   title: string;
+  direction: "inbound" | "outbound";
   greeting: string;
   qualifying_questions: string;
   objection_handlers: string;
@@ -38,34 +40,47 @@ function ScriptsPage() {
   const { data: scripts } = useQuery<Script[]>({ queryKey: ["scripts"], queryFn: () => listFn() as any });
   const { data: orgs } = useQuery<Org[]>({ queryKey: ["orgs"], queryFn: () => listOrgsFn() as any });
 
+  const inbound = (scripts ?? []).filter((s) => s.direction === "inbound");
+  const outbound = (scripts ?? []).filter((s) => s.direction === "outbound");
+
   return (
     <div className="space-y-6 max-w-5xl">
-      <div className="flex items-start justify-between gap-4">
-        <div>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="min-w-0">
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Phone className="h-7 w-7" /> Call Scripts
           </h1>
           <p className="text-muted-foreground">
-            What the AI says when the phone rings. Edit anything — the AI uses these word-for-word.
-            One "default" script per business is required.
+            What you (or the AI) say on every call. Tagged <strong>Inbound</strong> (calls coming to you)
+            or <strong>Outbound</strong> (calls you make out). Edit anything — the AI follows these word-for-word.
           </p>
         </div>
         <ScriptDialog orgs={orgs ?? []} mode="create" />
       </div>
 
-      <div className="grid gap-4">
-        {(scripts ?? []).map((s) => (
-          <ScriptCard key={s.id} script={s} orgs={orgs ?? []} />
-        ))}
-        {!scripts?.length && (
-          <Card>
-            <CardContent className="py-10 text-center text-muted-foreground">
-              No scripts yet. Click "Add script" above to get started.
-            </CardContent>
-          </Card>
-        )}
-      </div>
+      <Tabs defaultValue="inbound">
+        <TabsList>
+          <TabsTrigger value="inbound">📞 Inbound ({inbound.length})</TabsTrigger>
+          <TabsTrigger value="outbound">☎️ Outbound ({outbound.length})</TabsTrigger>
+        </TabsList>
+        <TabsContent value="inbound" className="mt-4 grid gap-4">
+          {inbound.map((s) => <ScriptCard key={s.id} script={s} orgs={orgs ?? []} />)}
+          {!inbound.length && <EmptyState label="No inbound scripts yet." />}
+        </TabsContent>
+        <TabsContent value="outbound" className="mt-4 grid gap-4">
+          {outbound.map((s) => <ScriptCard key={s.id} script={s} orgs={orgs ?? []} />)}
+          {!outbound.length && <EmptyState label="No outbound scripts yet." />}
+        </TabsContent>
+      </Tabs>
     </div>
+  );
+}
+
+function EmptyState({ label }: { label: string }) {
+  return (
+    <Card>
+      <CardContent className="py-10 text-center text-muted-foreground">{label}</CardContent>
+    </Card>
   );
 }
 
@@ -107,6 +122,9 @@ function ScriptCard({ script, orgs }: { script: Script; orgs: Org[] }) {
         <div className="min-w-0">
           <CardTitle className="text-lg flex flex-wrap items-center gap-2">
             {script.title}
+            <Badge variant={script.direction === "inbound" ? "default" : "outline"}>
+              {script.direction === "inbound" ? "📞 Inbound" : "☎️ Outbound"}
+            </Badge>
             {script.is_default && <Badge>Default</Badge>}
             <Badge variant="secondary">{script.organizations?.name ?? "—"}</Badge>
             {script.services?.name && <Badge variant="outline">{script.services.name}</Badge>}
@@ -164,6 +182,7 @@ function ScriptDialog({
   const upsertFn = useServerFn(upsertScript);
   const [open, setOpen] = useState(false);
   const [orgId, setOrgId] = useState(script?.organization_id ?? orgs[0]?.id ?? "");
+  const [direction, setDirection] = useState<"inbound" | "outbound">(script?.direction ?? "inbound");
   const [title, setTitle] = useState(script?.title ?? "");
   const [greeting, setGreeting] = useState(script?.greeting ?? "");
   const [qq, setQq] = useState(script?.qualifying_questions ?? "");
@@ -179,6 +198,7 @@ function ScriptDialog({
           id: script?.id,
           organization_id: orgId,
           title,
+          direction,
           greeting,
           qualifying_questions: qq,
           objection_handlers: obj,
@@ -222,6 +242,27 @@ function ScriptDialog({
                 </option>
               ))}
             </select>
+          </div>
+          <div>
+            <Label>Direction</Label>
+            <div className="flex gap-2 mt-1">
+              <Button
+                type="button"
+                variant={direction === "inbound" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setDirection("inbound")}
+              >
+                📞 Inbound
+              </Button>
+              <Button
+                type="button"
+                variant={direction === "outbound" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setDirection("outbound")}
+              >
+                ☎️ Outbound
+              </Button>
+            </div>
           </div>
           <div>
             <Label>Title</Label>
