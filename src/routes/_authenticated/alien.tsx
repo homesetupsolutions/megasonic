@@ -36,6 +36,7 @@ function AlienCommandCenter() {
   const settingsFn = useServerFn(getAiSettings);
   const updateSettings = useServerFn(updateAiSettings);
 
+  const [expanded, setExpanded] = useState(false);
   const [phone, setPhone] = useState("");
   const [phoneData, setPhoneData] = useState<Awaited<ReturnType<typeof lookup>> | null>(null);
   const [messages, setMessages] = useState<Msg[]>([
@@ -189,11 +190,11 @@ function AlienCommandCenter() {
 
   return (
     <div className="-m-6 min-h-[calc(100vh-3rem)] bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white p-4 md:p-6 space-y-4">
-      <AlienHud actions={actions as never} runs={runs as never} isRunning={running} onRun={onHunt} onTeach={onTeach} />
-      <LiveScanFeed />
+      <AlienHud actions={actions as never} runs={runs as never} isRunning={running} onRun={onHunt} onTeach={onTeach} expanded={expanded} onToggleExpand={() => setExpanded((v) => !v)} />
+      {!expanded && <LiveScanFeed />}
 
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className={"grid grid-cols-1 gap-4 " + (expanded ? "" : "lg:grid-cols-3")}>
         {/* LEFT — Phone + Scripts + Notifications */}
         <div className="space-y-4">
           <Card className="bg-black/40 border-white/10 backdrop-blur p-4 space-y-3">
