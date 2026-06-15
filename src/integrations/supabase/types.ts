@@ -49,6 +49,72 @@ export type Database = {
           },
         ]
       }
+      bookings: {
+        Row: {
+          created_at: string
+          customer_email: string | null
+          customer_name: string
+          customer_phone: string | null
+          duration_minutes: number | null
+          id: string
+          notes: string | null
+          organization_id: string
+          owner_id: string
+          scheduled_at: string
+          service_id: string | null
+          source: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          customer_email?: string | null
+          customer_name: string
+          customer_phone?: string | null
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          organization_id: string
+          owner_id: string
+          scheduled_at: string
+          service_id?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string
+          customer_phone?: string | null
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          owner_id?: string
+          scheduled_at?: string
+          service_id?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customers: {
         Row: {
           created_at: string
@@ -285,6 +351,7 @@ export type Database = {
           id: string
           last_seen_at: string | null
           name: string
+          organization_id: string | null
           owner_id: string
           slug: string
           updated_at: string
@@ -299,6 +366,7 @@ export type Database = {
           id?: string
           last_seen_at?: string | null
           name: string
+          organization_id?: string | null
           owner_id: string
           slug: string
           updated_at?: string
@@ -313,12 +381,129 @@ export type Database = {
           id?: string
           last_seen_at?: string | null
           name?: string
+          organization_id?: string | null
           owner_id?: string
           slug?: string
           updated_at?: string
           url?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: "linked_projects_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          name: string
+          owner_id: string
+          slug: string
+          square_enabled: boolean
+          square_location_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          name: string
+          owner_id: string
+          slug: string
+          square_enabled?: boolean
+          square_location_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          name?: string
+          owner_id?: string
+          slug?: string
+          square_enabled?: boolean
+          square_location_id?: string | null
+          updated_at?: string
+        }
         Relationships: []
+      }
+      price_change_requests: {
+        Row: {
+          applied_at: string | null
+          change_type: string
+          created_at: string
+          id: string
+          organization_id: string
+          owner_id: string
+          payload: Json
+          propagation_log: Json
+          reason: string | null
+          requested_by: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          service_id: string | null
+          square_synced: boolean
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          applied_at?: string | null
+          change_type: string
+          created_at?: string
+          id?: string
+          organization_id: string
+          owner_id: string
+          payload?: Json
+          propagation_log?: Json
+          reason?: string | null
+          requested_by: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          service_id?: string | null
+          square_synced?: boolean
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          applied_at?: string | null
+          change_type?: string
+          created_at?: string
+          id?: string
+          organization_id?: string
+          owner_id?: string
+          payload?: Json
+          propagation_log?: Json
+          reason?: string | null
+          requested_by?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          service_id?: string | null
+          square_synced?: boolean
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_change_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "price_change_requests_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -343,6 +528,113 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      services: {
+        Row: {
+          active: boolean
+          created_at: string
+          currency: string
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          name: string
+          organization_id: string
+          owner_id: string
+          price_cents: number
+          sku: string | null
+          square_catalog_id: string | null
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          currency?: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          name: string
+          organization_id: string
+          owner_id: string
+          price_cents?: number
+          sku?: string | null
+          square_catalog_id?: string | null
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          currency?: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          name?: string
+          organization_id?: string
+          owner_id?: string
+          price_cents?: number
+          sku?: string | null
+          square_catalog_id?: string | null
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      square_sync_log: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          organization_id: string
+          owner_id: string
+          response: Json | null
+          service_id: string | null
+          status: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          organization_id: string
+          owner_id: string
+          response?: Json | null
+          service_id?: string | null
+          status: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          organization_id?: string
+          owner_id?: string
+          response?: Json | null
+          service_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "square_sync_log_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "square_sync_log_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
