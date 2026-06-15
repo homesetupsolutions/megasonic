@@ -73,12 +73,25 @@ function StrategistPage() {
 
   return (
     <div className="p-6 space-y-6">
+      <AlienHud
+        actions={(actions.data ?? []) as any}
+        runs={(runs.data ?? []) as any}
+        isRunning={trigger.isPending}
+        onRun={() => trigger.mutate()}
+        onTeach={(note) => {
+          const prev = settings.data?.guidance ?? "";
+          const next = prev ? `${prev}\n- ${note}` : `- ${note}`;
+          saveSettings.mutate({ guidance: next } as any);
+          toast.success("Got it — alien learned a new trick");
+        }}
+      />
+
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2"><Brain className="h-7 w-7" /> Always-On Strategist</h1>
-          <p className="text-muted-foreground">Your AI runs continuously across SonicFeel Inc + Home Setup Solutions, learning how to make you money.</p>
+          <h1 className="text-2xl font-bold flex items-center gap-2"><Brain className="h-6 w-6" /> Always-On Strategist</h1>
+          <p className="text-muted-foreground text-sm">Runs continuously across FeelBass + HSS, hunting for ways to fill your calendar.</p>
         </div>
-        <Button onClick={() => trigger.mutate()} disabled={trigger.isPending}>
+        <Button onClick={() => trigger.mutate()} disabled={trigger.isPending} variant="outline">
           <Play className="h-4 w-4 mr-2" /> Run Now
         </Button>
       </div>
