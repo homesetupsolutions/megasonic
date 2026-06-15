@@ -120,14 +120,24 @@ function ProjectsPage() {
             services, and call scripts. Three steps below.
           </p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button size="lg" className="h-12"><Plus className="h-5 w-5 mr-2" /> Link a project</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Link a Lovable project</DialogTitle>
-            </DialogHeader>
+        <div className="flex items-center gap-2">
+          <Button
+            size="lg"
+            variant="secondary"
+            className="h-12"
+            disabled={quickAdd.isPending}
+            onClick={() => quickAdd.mutate()}
+          >
+            {quickAdd.isPending ? "Linking…" : "Quick-add my 4 apps"}
+          </Button>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button size="lg" className="h-12"><Plus className="h-5 w-5 mr-2" /> Link a project</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Link a Lovable project</DialogTitle>
+              </DialogHeader>
             <div className="space-y-3">
               <div className="space-y-2">
                 <Label>Project name</Label>
