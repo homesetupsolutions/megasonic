@@ -80,7 +80,7 @@ function AuthedShell() {
           <SidebarContent>
             <SidebarGroup>
               <SidebarGroupLabel className="px-2 py-3 text-sm font-semibold text-foreground">
-                Command Center
+                MagaSonic
               </SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
