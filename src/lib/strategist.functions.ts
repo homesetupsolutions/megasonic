@@ -85,6 +85,7 @@ export const updateAiSettings = createServerFn({ method: "POST" })
     enabled: z.boolean().optional(),
     cadence_minutes: z.number().int().min(1).max(1440).optional(),
     auto_run_on_new_lead: z.boolean().optional(),
+    guidance: z.string().max(10000).optional(),
   }).parse(i))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
