@@ -301,3 +301,38 @@ export const magasonic = {
     </Dialog>
   );
 }
+
+function BulkKeysModal({
+  data,
+  onClose,
+}: {
+  data: Array<{ name: string; key: string; url: string }> | null;
+  onClose: () => void;
+}) {
+  if (!data) return null;
+  const text = data.map((d) => `${d.name} (${d.url})\nHUB_KEY=${d.key}`).join("\n\n");
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Your project keys ({data.length})</DialogTitle>
+        </DialogHeader>
+        <p className="text-sm text-muted-foreground">
+          Each key shows ONCE. Copy this list now — paste into each app's
+          <code> src/lib/magasonic-client.ts</code> as the <code>HUB_KEY</code>. Rotate any time from this page.
+        </p>
+        <pre className="bg-muted text-xs rounded p-3 overflow-auto max-h-96"><code>{text}</code></pre>
+        <DialogFooter>
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(text);
+              toast.success("Copied all keys");
+            }}
+          >
+            <Copy className="h-4 w-4 mr-2" /> Copy all
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
