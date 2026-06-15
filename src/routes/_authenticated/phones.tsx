@@ -165,7 +165,9 @@ export default function PhonesPage() {
 
       <div className="grid md:grid-cols-2 gap-4">
         {devices.map((d) => {
-          const provUrl = `${origin}/api/public/provision/${d.mac_address}.cfg?token=${d.provision_token}`;
+          const yealink = `${origin}/api/public/provision/${d.mac_address}.cfg?token=${d.provision_token}`;
+          const grandstream = `${origin}/api/public/provision/cfg${d.mac_address}.xml?token=${d.provision_token}`;
+          const generic = `${origin}/api/public/provision/${d.mac_address}.txt?token=${d.provision_token}`;
           return (
             <Card key={d.id}>
               <CardHeader className="flex flex-row items-center justify-between">
@@ -179,7 +181,9 @@ export default function PhonesPage() {
               <CardContent className="space-y-2 text-sm">
                 <div><b>MAC:</b> <code>{d.mac_address}</code></div>
                 <div><b>SIP:</b> {d.sip_username}@{d.sip_server}:{d.sip_port}</div>
-                <UrlRow label="Provisioning URL (paste in phone Auto Provision)" value={provUrl} />
+                <UrlRow label="Yealink provisioning URL" value={yealink} />
+                <UrlRow label="Grandstream provisioning URL" value={grandstream} />
+                <UrlRow label="Other brands — plain-text setup" value={generic} />
                 <div className="text-xs text-muted-foreground">
                   Last fetched: {d.last_provisioned_at ? new Date(d.last_provisioned_at).toLocaleString() : "never"}
                 </div>
