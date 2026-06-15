@@ -62,7 +62,8 @@ export const executeAction = createServerFn({ method: "POST" })
   .inputValidator((i) => z.object({ id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { executeApprovedAction } = await import("@/lib/strategist.server");
-    return executeApprovedAction(data.id, context.userId);
+    const result = await executeApprovedAction(data.id, context.userId);
+    return { ok: true, result: JSON.parse(JSON.stringify(result)) };
   });
 
 export const getAiSettings = createServerFn({ method: "GET" })
