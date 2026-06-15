@@ -124,7 +124,21 @@ function ProjectsPage() {
                   </p>
                 </div>
               </div>
-              <div className="flex gap-1">
+              <div className="flex items-center gap-2">
+                <Select
+                  value={p.organization_id ?? "none"}
+                  onValueChange={(v) =>
+                    assign.mutate({ id: p.id, organization_id: v === "none" ? null : v })
+                  }
+                >
+                  <SelectTrigger className="h-8 w-44 text-xs"><SelectValue placeholder="Org" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Unassigned</SelectItem>
+                    {orgs?.map((o) => (
+                      <SelectItem key={o.id} value={o.id}>{o.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Button variant="ghost" size="sm" onClick={() => rotate.mutate(p.id)} title="Rotate key">
                   <RefreshCw className="h-4 w-4" />
                 </Button>
