@@ -75,6 +75,16 @@ function AlienCommandCenter() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, thinking]);
 
+  const speak = (text: string) => {
+    if (!speakReplies || typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    try {
+      const u = new SpeechSynthesisUtterance(text.replace(/[*_#`>-]/g, "").slice(0, 600));
+      u.rate = 1.05; u.pitch = 1.25;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    } catch { /* noop */ }
+  };
+
   const send = async (override?: string) => {
     const text = (override ?? input).trim();
     if (!text || thinking) return;
@@ -85,6 +95,7 @@ function AlienCommandCenter() {
     try {
       const res = await ask({ data: { messages: next, phone: phone || null } });
       setMessages((m) => [...m, { role: "assistant", content: res.reply }]);
+      speak(res.reply);
     } catch (e: unknown) {
       const err = e as Error;
       toast.error(err?.message ?? "Alien hiccup");
@@ -92,6 +103,38 @@ function AlienCommandCenter() {
     } finally {
       setThinking(false);
     }
+  };
+
+  const toggleMic = () => {
+    const w = window as unknown as { SpeechRecognition?: new () => unknown; webkitSpeechRecognition?: new () => unknown };
+    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
+    if (!SR) { toast.error("Voice input not supported in this browser"); return; }
+    if (listening) {
+      try { (recogRef.current as { stop?: () => void } | null)?.stop?.(); } catch { /* noop */ }
+      setListening(false); return;
+    }
+    const rec = new SR() as { lang: string; interimResults: boolean; onresult: (e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void; onend: () => void; onerror: () => void; start: () => void; stop: () => void };
+    rec.lang = "en-US"; rec.interimResults = false;
+    rec.onresult = (e) => {
+      const t = Array.from(e.results).map((r) => r[0].transcript).join(" ");
+      setInput((v) => (v ? v + " " : "") + t);
+    };
+    rec.onend = () => setListening(false);
+    rec.onerror = () => setListening(false);
+    recogRef.current = rec;
+    try { rec.start(); setListening(true); } catch { setListening(false); }
+  };
+
+  const copyMsg = async (text: string) => {
+    try { await navigator.clipboard.writeText(text); toast.success("Copied!"); } catch { toast.error("Copy failed"); }
+  };
+  const callPhone = () => {
+    if (!phone.trim()) { toast.error("Enter a phone number first"); return; }
+    window.location.href = `tel:${phone.replace(/[^\d+]/g, "")}`;
+  };
+  const textPhone = () => {
+    if (!phone.trim()) { toast.error("Enter a phone number first"); return; }
+    window.location.href = `sms:${phone.replace(/[^\d+]/g, "")}`;
   };
 
   const doLookup = async () => {
