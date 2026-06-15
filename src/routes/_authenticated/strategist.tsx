@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   listAiRuns, listAiActions, setActionStatus, executeAction,
-  triggerStrategistRun, getAiSettings, updateAiSettings,
+  triggerStrategistRun, getAiSettings, updateAiSettings, runRemindersNow,
 } from "@/lib/strategist.functions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,6 +28,7 @@ function StrategistPage() {
   const setStatusFn = useServerFn(setActionStatus);
   const executeFn = useServerFn(executeAction);
   const triggerFn = useServerFn(triggerStrategistRun);
+  const remindersNowFn = useServerFn(runRemindersNow);
   const settingsFn = useServerFn(getAiSettings);
   const updateSettingsFn = useServerFn(updateAiSettings);
 
@@ -123,6 +124,62 @@ function StrategistPage() {
             />
           </div>
           <p className="text-xs text-muted-foreground">Last run: {settings.data?.last_run_at ? new Date(settings.data.last_run_at).toLocaleString() : "never"}</p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>📞 Daily Appointment Reminders</CardTitle></CardHeader>
+        <CardContent className="flex flex-wrap items-end gap-6">
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={settings.data?.reminder_enabled ?? true}
+              onCheckedChange={(v) => saveSettings.mutate({ reminder_enabled: v } as any)}
+            />
+            <Label>Auto-send daily</Label>
+          </div>
+          <div>
+            <Label>Send at (UTC hour)</Label>
+            <Input
+              type="number" min={0} max={23}
+              defaultValue={settings.data?.reminder_hour ?? 9}
+              onBlur={(e) => saveSettings.mutate({ reminder_hour: parseInt(e.target.value, 10) } as any)}
+              className="w-24"
+            />
+          </div>
+          <div>
+            <Label>Lead time (hours)</Label>
+            <Input
+              type="number" min={1} max={168}
+              defaultValue={settings.data?.reminder_lead_hours ?? 24}
+              onBlur={(e) => saveSettings.mutate({ reminder_lead_hours: parseInt(e.target.value, 10) } as any)}
+              className="w-24"
+            />
+          </div>
+          <div>
+            <Label>Method</Label>
+            <select
+              className="block border rounded px-2 py-1 bg-background"
+              defaultValue={settings.data?.reminder_method ?? "queue_call"}
+              onChange={(e) => saveSettings.mutate({ reminder_method: e.target.value as any } as any)}
+            >
+              <option value="queue_call">Queue desk-phone call (click-to-dial)</option>
+              <option value="draft_sms">Draft SMS</option>
+              <option value="draft_email">Draft email</option>
+            </select>
+          </div>
+          <Button
+            variant="secondary"
+            onClick={async () => {
+              await remindersNowFn({ data: {} } as any);
+              toast.success("Reminder sweep queued");
+              qc.invalidateQueries({ queryKey: ["ai_actions"] });
+            }}
+          >
+            Run now
+          </Button>
+          <p className="text-xs text-muted-foreground w-full">
+            Alien scans bookings in the next N hours, drafts a personalized reminder script per customer, and drops them into the action queue. With a Yealink/Grandstream registered, each reminder becomes a one-click dial from your desk phone.
+          </p>
         </CardContent>
       </Card>
 
