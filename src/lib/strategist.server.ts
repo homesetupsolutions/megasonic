@@ -95,8 +95,8 @@ export async function runStrategistForUser(opts: {
       // Gather org context
       const [{ data: services }, { data: leads }, { data: customers }, { data: bookings }, { data: knowledge }, { data: investors }, { data: grants }, { data: recentActions }] = await Promise.all([
         db.from("services").select("name,price_cents,currency,duration_minutes,description,is_active").eq("organization_id", org.id),
-        db.from("leads").select("name,email,phone,source,status,notes,created_at").eq("user_id", userId).order("created_at", { ascending: false }).limit(25),
-        db.from("customers").select("name,email,phone,notes,created_at").eq("user_id", userId).order("created_at", { ascending: false }).limit(25),
+        db.from("leads").select("name,email,phone,source,stage,notes,created_at").eq("owner_id", userId).order("created_at", { ascending: false }).limit(25),
+        db.from("customers").select("name,email,phone,notes,created_at").eq("owner_id", userId).order("created_at", { ascending: false }).limit(25),
         db.from("bookings").select("customer_name,scheduled_at,status,notes").eq("organization_id", org.id).order("scheduled_at", { ascending: false }).limit(15),
         db.from("knowledge_files").select("filename,summary,tags").or(`organization_id.eq.${org.id},organization_id.is.null`).eq("owner_id", userId).limit(20),
         db.from("investors").select("name,firm,status,focus,check_size").eq("organization_id", org.id).limit(20),
