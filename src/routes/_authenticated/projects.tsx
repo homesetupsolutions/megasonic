@@ -168,24 +168,36 @@ function ProjectsPage() {
 function KeyModal({ data, onClose }: { data: { name: string; key: string } | null; onClose: () => void }) {
   if (!data) return null;
   const origin = typeof window !== "undefined" ? window.location.origin : "https://your-hub.lovable.app";
-  const snippet = `// hub-client.ts — paste into any Lovable project to stream events to the hub
-const HUB = "${origin}/api/public/ingest";
-const HUB_KEY = "${data.key}"; // keep this secret-ish (it's per-project, you can rotate from the hub)
+  const snippet = `// magasonic-client.ts — paste into any Lovable project to link with MagaSonic
+const HUB = "${origin}";
+const HUB_KEY = "${data.key}"; // shown once. Rotate from MagaSonic → Projects.
 
-export const hub = {
+export const magasonic = {
   emit: (type: string, payload: Record<string, any> = {}) =>
-    fetch(HUB, {
+    fetch(HUB + "/api/public/ingest", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ project_key: HUB_KEY, type, payload }),
     }).catch(() => {}),
   lead: (p: { name: string; email?: string; phone?: string; source?: string; notes?: string }) =>
-    hub.emit("lead", p),
-  idea: (p: { title: string; body?: string }) => hub.emit("idea", p),
+    magasonic.emit("lead", p),
+  idea: (p: { title: string; body?: string }) => magasonic.emit("idea", p),
   customer: (p: { name: string; email?: string; phone?: string; notes?: string }) =>
-    hub.emit("customer", p),
+    magasonic.emit("customer", p),
   inventory: (p: { name: string; sku?: string; quantity?: number; location?: string; status?: string }) =>
-    hub.emit("inventory", p),
+    magasonic.emit("inventory", p),
+  booking: (p: { customer_name: string; service_id?: string; scheduled_at: string; customer_email?: string; customer_phone?: string; notes?: string }) =>
+    magasonic.emit("booking", p),
+  // Live master catalog (services + prices). Call on app start + when "catalog.updated" is broadcast.
+  catalog: async () => {
+    const r = await fetch(HUB + "/api/public/catalog?key=" + encodeURIComponent(HUB_KEY), { cache: "no-store" });
+    if (!r.ok) throw new Error("catalog: " + r.status);
+    return (await r.json()).services as Array<{
+      id: string; name: string; description: string | null; price_cents: number;
+      currency: string; duration_minutes: number | null; sku: string | null;
+      active: boolean; version: number; updated_at: string;
+    }>;
+  },
 };
 `;
   return (
