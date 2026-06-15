@@ -884,6 +884,135 @@ export type Database = {
         }
         Relationships: []
       }
+      phone_calls: {
+        Row: {
+          answered: boolean | null
+          callee_number: string | null
+          caller_name: string | null
+          caller_number: string | null
+          created_at: string
+          device_id: string | null
+          direction: string
+          duration_seconds: number | null
+          ended_at: string | null
+          event: string
+          id: string
+          lead_id: string | null
+          mac_address: string | null
+          missed: boolean | null
+          owner_id: string
+          raw: Json | null
+          started_at: string | null
+        }
+        Insert: {
+          answered?: boolean | null
+          callee_number?: string | null
+          caller_name?: string | null
+          caller_number?: string | null
+          created_at?: string
+          device_id?: string | null
+          direction: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          event: string
+          id?: string
+          lead_id?: string | null
+          mac_address?: string | null
+          missed?: boolean | null
+          owner_id: string
+          raw?: Json | null
+          started_at?: string | null
+        }
+        Update: {
+          answered?: boolean | null
+          callee_number?: string | null
+          caller_name?: string | null
+          caller_number?: string | null
+          created_at?: string
+          device_id?: string | null
+          direction?: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          event?: string
+          id?: string
+          lead_id?: string | null
+          mac_address?: string | null
+          missed?: boolean | null
+          owner_id?: string
+          raw?: Json | null
+          started_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "phone_calls_device_id_fkey"
+            columns: ["device_id"]
+            isOneToOne: false
+            referencedRelation: "phone_devices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "phone_calls_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      phone_devices: {
+        Row: {
+          created_at: string
+          extra_config: Json | null
+          id: string
+          label: string | null
+          last_provisioned_at: string | null
+          mac_address: string
+          model: string | null
+          owner_id: string
+          provision_token: string
+          ringtone_url: string | null
+          sip_password: string | null
+          sip_port: number | null
+          sip_server: string | null
+          sip_username: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          extra_config?: Json | null
+          id?: string
+          label?: string | null
+          last_provisioned_at?: string | null
+          mac_address: string
+          model?: string | null
+          owner_id: string
+          provision_token?: string
+          ringtone_url?: string | null
+          sip_password?: string | null
+          sip_port?: number | null
+          sip_server?: string | null
+          sip_username?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          extra_config?: Json | null
+          id?: string
+          label?: string | null
+          last_provisioned_at?: string | null
+          mac_address?: string
+          model?: string | null
+          owner_id?: string
+          provision_token?: string
+          ringtone_url?: string | null
+          sip_password?: string | null
+          sip_port?: number | null
+          sip_server?: string | null
+          sip_username?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       price_change_requests: {
         Row: {
           applied_at: string | null
