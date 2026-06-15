@@ -155,6 +155,7 @@ function ProjectsPage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       <Card className="bg-muted/40">
