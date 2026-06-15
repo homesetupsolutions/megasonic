@@ -220,6 +220,7 @@ function ProjectsPage() {
       </div>
 
       <KeyModal data={newKey} onClose={() => setNewKey(null)} />
+      <BulkKeysModal data={bulkKeys} onClose={() => setBulkKeys(null)} />
     </div>
   );
 }
