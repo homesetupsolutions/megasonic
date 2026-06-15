@@ -21,9 +21,9 @@ export const lookupByPhone = createServerFn({ method: "POST" })
     const sb = context.supabase;
 
     const [leads, customers, bookings, calls, scripts] = await Promise.all([
-      sb.from("leads").select("*, organizations(name,slug,kind)").or(`phone.ilike.${like},phone.ilike.%${raw}%`).limit(10),
+      sb.from("leads").select("*").or(`phone.ilike.${like},phone.ilike.%${raw}%`).limit(10),
       sb.from("customers").select("*, organizations(name,slug,kind)").or(`phone.ilike.${like},phone.ilike.%${raw}%`).limit(10),
-      sb.from("bookings").select("*, services(name), organizations(name,slug,kind)").or(`customer_phone.ilike.${like}`).order("starts_at", { ascending: false }).limit(10),
+      sb.from("bookings").select("*, services(name), organizations(name,slug,kind)").or(`customer_phone.ilike.${like}`).order("scheduled_at", { ascending: false }).limit(10),
       sb.from("voice_calls").select("*").or(`from_number.ilike.${like},to_number.ilike.${like}`).order("created_at", { ascending: false }).limit(10),
       sb.from("call_scripts").select("id,title,direction,greeting,qualifying_questions,objection_handlers,closing,full_script, organizations(name,slug,kind), services(name)").order("is_default", { ascending: false }),
     ]);
