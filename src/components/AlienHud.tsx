@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Zap, Mail, CalendarCheck, Search, DollarSign, Heart, Crown, Gem, Music, VolumeX, Volume2 } from "lucide-react";
+import { Sparkles, Zap, Mail, CalendarCheck, Search, DollarSign, Heart, Crown, Gem, Music, VolumeX, Volume2, Maximize2, Minimize2, Egg } from "lucide-react";
 
 type Action = {
   id: string;
@@ -41,6 +41,35 @@ const QUIPS = [
 
 const HATS = ["none", "crown", "party", "halo", "cap"] as const;
 type Hat = typeof HATS[number];
+
+// ----- ALIEN TYPES (new species each monthly rebirth) -----
+type AlienType = {
+  id: string;
+  name: string;
+  emoji: string;
+  palette: [string, string, string, string, string]; // 5 stops for body gradient
+  eyeColor: string;
+  antennaTip: string;
+};
+const ALIEN_TYPES: AlienType[] = [
+  { id: "cosmic",  name: "Cosmic",   emoji: "🌌", palette: ["#ff5cf2","#fde047","#4ade80","#22d3ee","#a78bfa"], eyeColor: "#0f172a", antennaTip: "#ff5cf2" },
+  { id: "lava",    name: "Lava",     emoji: "🔥", palette: ["#fde047","#fb923c","#f97316","#ef4444","#7c2d12"], eyeColor: "#0f172a", antennaTip: "#fb923c" },
+  { id: "ocean",   name: "Ocean",    emoji: "🌊", palette: ["#a5f3fc","#67e8f9","#22d3ee","#0ea5e9","#1e40af"], eyeColor: "#082f49", antennaTip: "#22d3ee" },
+  { id: "forest",  name: "Forest",   emoji: "🌿", palette: ["#bbf7d0","#86efac","#4ade80","#16a34a","#14532d"], eyeColor: "#052e16", antennaTip: "#84cc16" },
+  { id: "candy",   name: "Candy",    emoji: "🍬", palette: ["#fbcfe8","#f9a8d4","#f472b6","#e879f9","#c084fc"], eyeColor: "#831843", antennaTip: "#f472b6" },
+  { id: "shadow",  name: "Shadow",   emoji: "🌑", palette: ["#a78bfa","#8b5cf6","#6366f1","#4338ca","#1e1b4b"], eyeColor: "#fde047", antennaTip: "#a78bfa" },
+  { id: "sunset",  name: "Sunset",   emoji: "🌅", palette: ["#fef08a","#fdba74","#fb7185","#e11d48","#7e22ce"], eyeColor: "#0f172a", antennaTip: "#fb7185" },
+  { id: "mint",    name: "Mint",     emoji: "🍃", palette: ["#ccfbf1","#5eead4","#2dd4bf","#0d9488","#134e4a"], eyeColor: "#042f2e", antennaTip: "#2dd4bf" },
+  { id: "ghost",   name: "Ghost",    emoji: "👻", palette: ["#ffffff","#e5e7eb","#cbd5e1","#94a3b8","#475569"], eyeColor: "#0f172a", antennaTip: "#c4b5fd" },
+  { id: "ember",   name: "Ember",    emoji: "✨", palette: ["#fef9c3","#fde047","#facc15","#ea580c","#7c2d12"], eyeColor: "#1c1917", antennaTip: "#facc15" },
+];
+function getMonthEpoch(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+function randomType(exceptId?: string): AlienType {
+  const pool = exceptId ? ALIEN_TYPES.filter((t) => t.id !== exceptId) : ALIEN_TYPES;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
 
 // ----- PET GROWTH STAGES -----
 type Stage = {
@@ -105,12 +134,16 @@ export function AlienHud({
   isRunning,
   onRun,
   onTeach,
+  expanded = false,
+  onToggleExpand,
 }: {
   actions: Action[];
   runs: Run[];
   isRunning: boolean;
   onRun: () => void;
   onTeach: (note: string) => void;
+  expanded?: boolean;
+  onToggleExpand?: () => void;
 }) {
   const latestRun = runs[0];
   const runningNow =
@@ -144,7 +177,22 @@ export function AlienHud({
     if (typeof window === "undefined") return 0;
     return Number(localStorage.getItem("alien.bonusXp") || 0);
   });
-  const xp = stats.executed + bonusXp;
+  // baseline = stats.executed at last rebirth; subtract so each life starts at 0 wins
+  const [baseline, setBaseline] = useState<number>(() => {
+    if (typeof window === "undefined") return 0;
+    return Number(localStorage.getItem("alien.baseline") || 0);
+  });
+  // alien species (rerolled each monthly rebirth)
+  const [typeId, setTypeId] = useState<string>(() => {
+    if (typeof window === "undefined") return ALIEN_TYPES[0].id;
+    return localStorage.getItem("alien.typeId") || ALIEN_TYPES[0].id;
+  });
+  const alienType = useMemo(
+    () => ALIEN_TYPES.find((t) => t.id === typeId) ?? ALIEN_TYPES[0],
+    [typeId]
+  );
+
+  const xp = Math.max(0, stats.executed - baseline) + bonusXp;
   const { stage, next, toNext, progress } = stageFor(xp);
 
   const [petName, setPetName] = useState<string>(() => {
@@ -155,6 +203,8 @@ export function AlienHud({
 
   useEffect(() => { try { localStorage.setItem("alien.name", petName); } catch { /* */ } }, [petName]);
   useEffect(() => { try { localStorage.setItem("alien.bonusXp", String(bonusXp)); } catch { /* */ } }, [bonusXp]);
+  useEffect(() => { try { localStorage.setItem("alien.baseline", String(baseline)); } catch { /* */ } }, [baseline]);
+  useEffect(() => { try { localStorage.setItem("alien.typeId", typeId); } catch { /* */ } }, [typeId]);
 
   // floating popups
   const [pops, setPops] = useState<Array<{ id: number; left: number; top?: number; text: string }>>([]);
