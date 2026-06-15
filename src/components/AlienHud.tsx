@@ -469,8 +469,8 @@ export function AlienHud({
             {stage.hasAura && (
               <div className={"absolute inset-0 -m-3 rounded-full bg-[conic-gradient(from_0deg,#ff5cf2,#fde047,#4ade80,#22d3ee,#a78bfa,#ff5cf2)] blur-xl opacity-50 animate-[spin_20s_linear_infinite] " + (evolveBurst ? "opacity-80" : "")} />
             )}
-            <div className={"relative h-40 w-40 transition-transform duration-700 ease-out " + danceClass} style={{ transform: `scale(${stage.scale})` }}>
-              <Alien busy={!!runningNow} mood={mood} eye={eye} hat={hat} stage={stage} />
+            <div className={"relative transition-all duration-700 ease-out " + (expanded ? "h-72 w-72 md:h-96 md:w-96" : "h-40 w-40") + " " + danceClass} style={{ transform: `scale(${stage.scale * (expanded ? 1.15 : 1)})` }}>
+              <Alien busy={!!runningNow} mood={mood} eye={eye} hat={hat} stage={stage} palette={alienType.palette} eyeColor={alienType.eyeColor} antennaTip={alienType.antennaTip} />
             </div>
             {/* heart sprinkles */}
             <div className="absolute inset-0 pointer-events-none">
@@ -525,12 +525,24 @@ export function AlienHud({
             <Badge className="border-0 bg-gradient-to-r from-pink-500 via-yellow-400 to-cyan-400 text-black font-bold">
               {stage.emoji} {stage.name}
             </Badge>
+            <Badge className="border-0 bg-white/20 text-white font-bold" title="Species — rerolled on the 1st of each month">
+              {alienType.emoji} {alienType.name}
+            </Badge>
             <Badge className={"border-0 font-bold " + (runningNow
               ? "bg-emerald-400 text-black animate-pulse"
               : "bg-white/20 text-white")}>
               {runningNow ? "● hunting" : "○ resting"}
             </Badge>
             <Badge className="border-0 bg-white/15 text-white text-[10px]">mood: {mood}</Badge>
+            {onToggleExpand && (
+              <button
+                onClick={onToggleExpand}
+                title={expanded ? "Collapse — show all windows" : "Expand — hide windows & make alien bigger"}
+                className="ml-auto inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full bg-white/15 hover:bg-white/30 border border-white/25 font-bold uppercase tracking-wider"
+              >
+                {expanded ? <><Minimize2 className="h-3 w-3" /> collapse</> : <><Maximize2 className="h-3 w-3" /> expand</>}
+              </button>
+            )}
           </div>
 
           <div className="space-y-1">
