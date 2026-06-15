@@ -28,6 +28,7 @@ function StrategistPage() {
   const setStatusFn = useServerFn(setActionStatus);
   const executeFn = useServerFn(executeAction);
   const triggerFn = useServerFn(triggerStrategistRun);
+  const remindersNowFn = useServerFn(runRemindersNow);
   const settingsFn = useServerFn(getAiSettings);
   const updateSettingsFn = useServerFn(updateAiSettings);
 
