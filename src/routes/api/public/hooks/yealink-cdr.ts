@@ -81,8 +81,9 @@ async function handle(request: Request) {
       return Response.json({ ok: false, error: "No owner resolvable" }, { status: 400 });
     }
 
-    // Try to link to an existing lead by phone, or create a fresh inbound lead for new callers
+    // Try to link to an existing lead by phone. If new inbound caller, enrich via Square + create lead.
     let leadId: string | null = null;
+    let squareCustomer: Awaited<ReturnType<typeof import("@/lib/square-customers.server").findSquareCustomerByPhone>> = null;
     const phoneToMatch = direction === "inbound" ? remote : local;
     if (phoneToMatch) {
       const { data: lead } = await supabaseAdmin
@@ -94,14 +95,19 @@ async function handle(request: Request) {
       if (lead) {
         leadId = lead.id;
       } else if (direction === "inbound" && (event === "incoming" || event === "missed")) {
+        const { findSquareCustomerByPhone } = await import("@/lib/square-customers.server");
+        squareCustomer = await findSquareCustomerByPhone(phoneToMatch);
         const { data: created } = await (supabaseAdmin.from("leads") as any)
           .insert({
             owner_id: ownerId,
-            name: displayRemote || `Caller ${phoneToMatch}`,
+            name: squareCustomer?.name || displayRemote || `Caller ${phoneToMatch}`,
             phone: phoneToMatch,
-            source: "desk_phone",
+            email: squareCustomer?.email ?? null,
+            source: squareCustomer ? "desk_phone+square" : "desk_phone",
             status: missed ? "missed_call" : "new",
-            notes: `Auto-created from ${missed ? "missed" : "incoming"} call on ${new Date().toISOString()}`,
+            notes: squareCustomer
+              ? `Matched Square customer ${squareCustomer.id}${squareCustomer.note ? ` — ${squareCustomer.note}` : ""}`
+              : `Auto-created from ${missed ? "missed" : "incoming"} call on ${new Date().toISOString()}`,
           })
           .select("id")
           .single();
