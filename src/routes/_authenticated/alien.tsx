@@ -47,6 +47,9 @@ function AlienCommandCenter() {
   const [actions, setActions] = useState<Awaited<ReturnType<typeof actionsFn>>>([]);
   const [notifs, setNotifs] = useState<Awaited<ReturnType<typeof notif>> | null>(null);
   const [activeScript, setActiveScript] = useState<{ title: string; body: string } | null>(null);
+  const [listening, setListening] = useState(false);
+  const [speakReplies, setSpeakReplies] = useState(false);
+  const recogRef = useRef<unknown>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
