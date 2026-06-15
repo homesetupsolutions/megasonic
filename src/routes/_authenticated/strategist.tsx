@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   listAiRuns, listAiActions, setActionStatus, executeAction,
-  triggerStrategistRun, getAiSettings, updateAiSettings,
+  triggerStrategistRun, getAiSettings, updateAiSettings, runRemindersNow,
 } from "@/lib/strategist.functions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
