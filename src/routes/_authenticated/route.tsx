@@ -25,6 +25,9 @@ import {
   ScrollText,
   Settings,
   LogOut,
+  Tags,
+  CheckSquare,
+  Calendar,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -41,6 +44,9 @@ export const Route = createFileRoute("/_authenticated")({
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Services & Pricing", url: "/services", icon: Tags },
+  { title: "Approvals", url: "/approvals", icon: CheckSquare },
+  { title: "Bookings", url: "/bookings", icon: Calendar },
   { title: "Projects", url: "/projects", icon: FolderKanban },
   { title: "Unified Feed", url: "/feed", icon: Rss },
   { title: "Ideas", url: "/ideas", icon: Lightbulb },
@@ -74,7 +80,7 @@ function AuthedShell() {
           <SidebarContent>
             <SidebarGroup>
               <SidebarGroupLabel className="px-2 py-3 text-sm font-semibold text-foreground">
-                Command Center
+                MagaSonic
               </SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
@@ -102,7 +108,7 @@ function AuthedShell() {
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-12 flex items-center border-b px-3 gap-2 sticky top-0 bg-background/80 backdrop-blur z-10">
             <SidebarTrigger />
-            <div className="font-medium text-sm text-muted-foreground">Master Command Center</div>
+            <div className="font-medium text-sm text-muted-foreground">MagaSonic — SonicFeel Inc &amp; Home Setup Solutions</div>
           </header>
           <main className="flex-1 p-6 overflow-auto">
             <Outlet />

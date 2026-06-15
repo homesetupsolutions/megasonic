@@ -7,12 +7,15 @@ import {
   deleteProject,
   listProjects,
   rotateProjectKey,
+  assignProjectOrg,
 } from "@/lib/hub.functions";
+import { listOrgs } from "@/lib/catalog.functions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Copy, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
@@ -27,8 +30,11 @@ function ProjectsPage() {
   const createFn = useServerFn(createProject);
   const rotateFn = useServerFn(rotateProjectKey);
   const deleteFn = useServerFn(deleteProject);
+  const assignFn = useServerFn(assignProjectOrg);
+  const orgsFn = useServerFn(listOrgs);
 
   const { data: projects } = useQuery({ queryKey: ["projects"], queryFn: () => listFn() });
+  const { data: orgs } = useQuery<any[]>({ queryKey: ["orgs"], queryFn: () => orgsFn() as any });
   const [newKey, setNewKey] = useState<{ name: string; key: string } | null>(null);
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
@@ -57,6 +63,12 @@ function ProjectsPage() {
 
   const del = useMutation({
     mutationFn: (id: string) => deleteFn({ data: { id } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["projects"] }),
+  });
+
+  const assign = useMutation({
+    mutationFn: ({ id, organization_id }: { id: string; organization_id: string | null }) =>
+      assignFn({ data: { id, organization_id } }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["projects"] }),
   });
 
@@ -112,7 +124,21 @@ function ProjectsPage() {
                   </p>
                 </div>
               </div>
-              <div className="flex gap-1">
+              <div className="flex items-center gap-2">
+                <Select
+                  value={p.organization_id ?? "none"}
+                  onValueChange={(v) =>
+                    assign.mutate({ id: p.id, organization_id: v === "none" ? null : v })
+                  }
+                >
+                  <SelectTrigger className="h-8 w-44 text-xs"><SelectValue placeholder="Org" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Unassigned</SelectItem>
+                    {orgs?.map((o) => (
+                      <SelectItem key={o.id} value={o.id}>{o.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Button variant="ghost" size="sm" onClick={() => rotate.mutate(p.id)} title="Rotate key">
                   <RefreshCw className="h-4 w-4" />
                 </Button>
@@ -142,24 +168,36 @@ function ProjectsPage() {
 function KeyModal({ data, onClose }: { data: { name: string; key: string } | null; onClose: () => void }) {
   if (!data) return null;
   const origin = typeof window !== "undefined" ? window.location.origin : "https://your-hub.lovable.app";
-  const snippet = `// hub-client.ts — paste into any Lovable project to stream events to the hub
-const HUB = "${origin}/api/public/ingest";
-const HUB_KEY = "${data.key}"; // keep this secret-ish (it's per-project, you can rotate from the hub)
+  const snippet = `// magasonic-client.ts — paste into any Lovable project to link with MagaSonic
+const HUB = "${origin}";
+const HUB_KEY = "${data.key}"; // shown once. Rotate from MagaSonic → Projects.
 
-export const hub = {
+export const magasonic = {
   emit: (type: string, payload: Record<string, any> = {}) =>
-    fetch(HUB, {
+    fetch(HUB + "/api/public/ingest", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ project_key: HUB_KEY, type, payload }),
     }).catch(() => {}),
   lead: (p: { name: string; email?: string; phone?: string; source?: string; notes?: string }) =>
-    hub.emit("lead", p),
-  idea: (p: { title: string; body?: string }) => hub.emit("idea", p),
+    magasonic.emit("lead", p),
+  idea: (p: { title: string; body?: string }) => magasonic.emit("idea", p),
   customer: (p: { name: string; email?: string; phone?: string; notes?: string }) =>
-    hub.emit("customer", p),
+    magasonic.emit("customer", p),
   inventory: (p: { name: string; sku?: string; quantity?: number; location?: string; status?: string }) =>
-    hub.emit("inventory", p),
+    magasonic.emit("inventory", p),
+  booking: (p: { customer_name: string; service_id?: string; scheduled_at: string; customer_email?: string; customer_phone?: string; notes?: string }) =>
+    magasonic.emit("booking", p),
+  // Live master catalog (services + prices). Call on app start + when "catalog.updated" is broadcast.
+  catalog: async () => {
+    const r = await fetch(HUB + "/api/public/catalog?key=" + encodeURIComponent(HUB_KEY), { cache: "no-store" });
+    if (!r.ok) throw new Error("catalog: " + r.status);
+    return (await r.json()).services as Array<{
+      id: string; name: string; description: string | null; price_cents: number;
+      currency: string; duration_minutes: number | null; sku: string | null;
+      active: boolean; version: number; updated_at: string;
+    }>;
+  },
 };
 `;
   return (
@@ -169,8 +207,7 @@ export const hub = {
           <DialogTitle>Snippet for {data.name}</DialogTitle>
         </DialogHeader>
         <p className="text-sm text-muted-foreground">
-          Save this in your other Lovable project as <code>src/lib/hub-client.ts</code>. Then call
-          <code> hub.lead(&#123;...&#125;)</code>, <code>hub.idea(&#123;...&#125;)</code>, etc. The key is shown ONCE — copy it now.
+          Save in your other Lovable project as <code>src/lib/magasonic-client.ts</code>. Call <code>magasonic.catalog()</code> for live prices, <code>magasonic.lead(&#123;...&#125;)</code>, <code>magasonic.booking(&#123;...&#125;)</code>, etc. The key shows ONCE — copy it now.
         </p>
         <pre className="bg-muted text-xs rounded p-3 overflow-auto max-h-96"><code>{snippet}</code></pre>
         <DialogFooter>

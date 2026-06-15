@@ -75,6 +75,20 @@ export const deleteProject = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const assignProjectOrg = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z.object({ id: z.string().uuid(), organization_id: z.string().uuid().nullable() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("linked_projects")
+      .update({ organization_id: data.organization_id })
+      .eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
+  });
+
 export const listRecentEvents = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
