@@ -139,9 +139,9 @@ export async function runStrategistForUser(opts: {
             title: String(a.title || "Untitled").slice(0, 200),
             reasoning: String(a.reasoning || "").slice(0, 2000),
             priority: Number.isFinite(a.priority) ? Math.max(1, Math.min(10, Number(a.priority))) : 5,
-            payload: a.payload ?? {},
+            payload: (a.payload ?? {}) as never,
             status: "pending",
-          })),
+          })) as never,
         );
       }
 
