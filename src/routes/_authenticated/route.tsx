@@ -28,6 +28,10 @@ import {
   Tags,
   CheckSquare,
   Calendar,
+  Brain,
+  FolderOpen,
+  TrendingUp,
+  Award,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -44,6 +48,10 @@ export const Route = createFileRoute("/_authenticated")({
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "AI Strategist", url: "/strategist", icon: Brain },
+  { title: "Knowledge Vault", url: "/knowledge", icon: FolderOpen },
+  { title: "Investors", url: "/investors", icon: TrendingUp },
+  { title: "Grants", url: "/grants", icon: Award },
   { title: "Services & Pricing", url: "/services", icon: Tags },
   { title: "Approvals", url: "/approvals", icon: CheckSquare },
   { title: "Bookings", url: "/bookings", icon: Calendar },
