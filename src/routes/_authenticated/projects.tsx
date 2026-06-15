@@ -66,6 +66,12 @@ function ProjectsPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["projects"] }),
   });
 
+  const assign = useMutation({
+    mutationFn: ({ id, organization_id }: { id: string; organization_id: string | null }) =>
+      assignFn({ data: { id, organization_id } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["projects"] }),
+  });
+
   return (
     <div className="space-y-6 max-w-5xl">
       <div className="flex items-center justify-between">
