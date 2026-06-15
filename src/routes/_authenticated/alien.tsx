@@ -351,16 +351,23 @@ function AlienCommandCenter() {
 
           <div ref={scrollRef} className="flex-1 overflow-auto space-y-3 pr-2 min-h-0">
             {messages.map((m, i) => (
-              <div key={i} className={"flex " + (m.role === "user" ? "justify-end" : "justify-start")}>
+              <div key={i} className={"flex group " + (m.role === "user" ? "justify-end" : "justify-start")}>
                 <div
                   className={
-                    "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap leading-relaxed " +
+                    "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap leading-relaxed relative " +
                     (m.role === "user"
                       ? "bg-gradient-to-br from-pink-500 to-fuchsia-600 text-white"
                       : "bg-white/10 border border-white/15 text-white")
                   }
                 >
                   {m.content}
+                  {m.role === "assistant" && (
+                    <div className="mt-1.5 flex gap-1 opacity-0 group-hover:opacity-100 transition">
+                      <button onClick={() => copyMsg(m.content)} className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 hover:bg-white/25 inline-flex items-center gap-1"><Copy className="h-2.5 w-2.5" />copy</button>
+                      <button onClick={() => speak(m.content)} className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 hover:bg-white/25 inline-flex items-center gap-1"><Volume2 className="h-2.5 w-2.5" />speak</button>
+                      <button onClick={() => send(`Expand on: "${m.content.slice(0, 120)}"`)} className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 hover:bg-white/25">↻ more</button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -377,13 +384,19 @@ function AlienCommandCenter() {
             onSubmit={(e) => { e.preventDefault(); send(); }}
             className="mt-3 flex gap-2"
           >
+            <Button type="button" onClick={toggleMic} title="Voice input" className={(listening ? "bg-red-500 hover:bg-red-400 animate-pulse" : "bg-white/10 hover:bg-white/20") + " border border-white/20 h-auto"}>
+              {listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+            </Button>
+            <Button type="button" onClick={() => setSpeakReplies((s) => !s)} title="Read replies aloud" className={(speakReplies ? "bg-emerald-500 hover:bg-emerald-400" : "bg-white/10 hover:bg-white/20") + " border border-white/20 h-auto"}>
+              {speakReplies ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+            </Button>
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
               }}
-              placeholder="Type a question or paste a number… (Enter to send)"
+              placeholder={listening ? "🎤 listening… speak now" : "Type, paste a number, or hit 🎤 (Enter to send)"}
               className="bg-white/10 border-white/20 text-white placeholder:text-white/40 resize-none min-h-[48px] max-h-32"
               rows={1}
             />
