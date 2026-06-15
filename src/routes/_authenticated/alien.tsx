@@ -267,7 +267,7 @@ function AlienCommandCenter() {
                   <NotifRow key={`c-${c.id}`} icon="📞" text={`Call ${c.from_number ?? c.to_number}`} status={c.status ?? ""} when={c.created_at} />
                 ))}
                 {notifs?.bookings?.slice(0, 5).map((b) => (
-                  <NotifRow key={`b-${b.id}`} icon="📅" text={`Booking ${b.customer_name ?? ""}`} when={b.starts_at} />
+                  <NotifRow key={`b-${b.id}`} icon="📅" text={`Booking ${b.customer_name ?? ""}`} when={b.scheduled_at} />
                 ))}
                 {!notifs?.actions?.length && !notifs?.leads?.length && !notifs?.calls?.length && !notifs?.bookings?.length && (
                   <div className="text-white/50 italic">Quiet… Hit HUNT FOR MONEY!</div>
