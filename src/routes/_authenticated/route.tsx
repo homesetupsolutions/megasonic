@@ -51,6 +51,7 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 const items = [
+  { title: "🛸 Alien", url: "/alien", icon: Sparkles },
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "AI Strategist", url: "/strategist", icon: Brain },
   { title: "Knowledge Vault", url: "/knowledge", icon: FolderOpen },
