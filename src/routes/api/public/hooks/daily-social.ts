@@ -44,17 +44,19 @@ export const Route = createFileRoute("/api/public/hooks/daily-social")({
           let draft: Record<string, unknown> = {};
           try { draft = JSON.parse(content); } catch { /* ignore */ }
 
-          // Log it to activity_log for every user with a profile so it shows up in the alien feed.
+          // Drop one pending ai_action per user so it appears in the alien feed for review.
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
           const { data: profiles } = await supabaseAdmin.from("profiles").select("id");
           const rows = (profiles ?? []).map((p: { id: string }) => ({
-            user_id: p.id,
+            owner_id: p.id,
             kind: "daily_social_draft",
             title: "Today's Facebook post + DM drafts ready",
-            meta: draft,
+            payload: draft as Record<string, unknown>,
+            status: "pending",
+            priority: 1,
           }));
           if (rows.length) {
-            await supabaseAdmin.from("activity_log").insert(rows);
+            await supabaseAdmin.from("ai_actions").insert(rows);
           }
 
           return Response.json({ ok: true, recipients: rows.length, draft });
