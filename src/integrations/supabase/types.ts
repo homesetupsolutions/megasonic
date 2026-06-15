@@ -49,6 +49,158 @@ export type Database = {
           },
         ]
       }
+      ai_actions: {
+        Row: {
+          approved_at: string | null
+          created_at: string
+          executed_at: string | null
+          id: string
+          kind: string
+          organization_id: string | null
+          owner_id: string
+          payload: Json
+          priority: number
+          reasoning: string | null
+          result: Json | null
+          run_id: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          created_at?: string
+          executed_at?: string | null
+          id?: string
+          kind: string
+          organization_id?: string | null
+          owner_id: string
+          payload?: Json
+          priority?: number
+          reasoning?: string | null
+          result?: Json | null
+          run_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          created_at?: string
+          executed_at?: string | null
+          id?: string
+          kind?: string
+          organization_id?: string | null
+          owner_id?: string
+          payload?: Json
+          priority?: number
+          reasoning?: string | null
+          result?: Json | null
+          run_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_actions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_actions_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "ai_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_runs: {
+        Row: {
+          actions_count: number
+          error: string | null
+          finished_at: string | null
+          id: string
+          model: string | null
+          organization_id: string | null
+          owner_id: string
+          started_at: string
+          status: string
+          summary: string | null
+          tokens_used: number | null
+          trigger: string
+        }
+        Insert: {
+          actions_count?: number
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          model?: string | null
+          organization_id?: string | null
+          owner_id: string
+          started_at?: string
+          status?: string
+          summary?: string | null
+          tokens_used?: number | null
+          trigger?: string
+        }
+        Update: {
+          actions_count?: number
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          model?: string | null
+          organization_id?: string | null
+          owner_id?: string
+          started_at?: string
+          status?: string
+          summary?: string | null
+          tokens_used?: number | null
+          trigger?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_runs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_settings: {
+        Row: {
+          auto_run_on_new_lead: boolean
+          cadence_minutes: number
+          created_at: string
+          enabled: boolean
+          last_run_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_run_on_new_lead?: boolean
+          cadence_minutes?: number
+          created_at?: string
+          enabled?: boolean
+          last_run_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_run_on_new_lead?: boolean
+          cadence_minutes?: number
+          created_at?: string
+          enabled?: boolean
+          last_run_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           created_at: string
@@ -194,6 +346,65 @@ export type Database = {
           },
         ]
       }
+      grants: {
+        Row: {
+          amount: string | null
+          created_at: string
+          deadline: string | null
+          draft_application: string | null
+          eligibility: string | null
+          id: string
+          name: string
+          notes: string | null
+          organization_id: string | null
+          owner_id: string
+          provider: string | null
+          status: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          amount?: string | null
+          created_at?: string
+          deadline?: string | null
+          draft_application?: string | null
+          eligibility?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          organization_id?: string | null
+          owner_id: string
+          provider?: string | null
+          status?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          amount?: string | null
+          created_at?: string
+          deadline?: string | null
+          draft_application?: string | null
+          eligibility?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          organization_id?: string | null
+          owner_id?: string
+          provider?: string | null
+          status?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grants_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ideas: {
         Row: {
           body: string | null
@@ -284,6 +495,124 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "linked_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      investors: {
+        Row: {
+          check_size: string | null
+          created_at: string
+          email: string | null
+          firm: string | null
+          focus: string | null
+          id: string
+          last_contacted_at: string | null
+          linkedin: string | null
+          name: string
+          notes: string | null
+          organization_id: string | null
+          owner_id: string
+          stage: string | null
+          status: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          check_size?: string | null
+          created_at?: string
+          email?: string | null
+          firm?: string | null
+          focus?: string | null
+          id?: string
+          last_contacted_at?: string | null
+          linkedin?: string | null
+          name: string
+          notes?: string | null
+          organization_id?: string | null
+          owner_id: string
+          stage?: string | null
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          check_size?: string | null
+          created_at?: string
+          email?: string | null
+          firm?: string | null
+          focus?: string | null
+          id?: string
+          last_contacted_at?: string | null
+          linkedin?: string | null
+          name?: string
+          notes?: string | null
+          organization_id?: string | null
+          owner_id?: string
+          stage?: string | null
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investors_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_files: {
+        Row: {
+          created_at: string
+          extracted_text: string | null
+          filename: string
+          id: string
+          mime_type: string | null
+          organization_id: string | null
+          owner_id: string
+          size_bytes: number | null
+          storage_path: string
+          summary: string | null
+          tags: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          extracted_text?: string | null
+          filename: string
+          id?: string
+          mime_type?: string | null
+          organization_id?: string | null
+          owner_id: string
+          size_bytes?: number | null
+          storage_path: string
+          summary?: string | null
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          extracted_text?: string | null
+          filename?: string
+          id?: string
+          mime_type?: string | null
+          organization_id?: string | null
+          owner_id?: string
+          size_bytes?: number | null
+          storage_path?: string
+          summary?: string | null
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_files_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]

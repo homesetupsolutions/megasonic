@@ -12,12 +12,16 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedStrategistRouteImport } from './routes/_authenticated/strategist'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated/services'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedLeadsRouteImport } from './routes/_authenticated/leads'
+import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authenticated/knowledge'
+import { Route as AuthenticatedInvestorsRouteImport } from './routes/_authenticated/investors'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
 import { Route as AuthenticatedIdeasRouteImport } from './routes/_authenticated/ideas'
+import { Route as AuthenticatedGrantsRouteImport } from './routes/_authenticated/grants'
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
@@ -26,6 +30,7 @@ import { Route as AuthenticatedApprovalsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as ApiPublicIngestRouteImport } from './routes/api/public/ingest'
 import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalog'
+import { Route as ApiPublicHooksStrategistRouteImport } from './routes/api/public/hooks/strategist'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -40,6 +45,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedStrategistRoute = AuthenticatedStrategistRouteImport.update({
+  id: '/strategist',
+  path: '/strategist',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
@@ -61,6 +71,16 @@ const AuthenticatedLeadsRoute = AuthenticatedLeadsRouteImport.update({
   path: '/leads',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedKnowledgeRoute = AuthenticatedKnowledgeRouteImport.update({
+  id: '/knowledge',
+  path: '/knowledge',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedInvestorsRoute = AuthenticatedInvestorsRouteImport.update({
+  id: '/investors',
+  path: '/investors',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedInventoryRoute = AuthenticatedInventoryRouteImport.update({
   id: '/inventory',
   path: '/inventory',
@@ -69,6 +89,11 @@ const AuthenticatedInventoryRoute = AuthenticatedInventoryRouteImport.update({
 const AuthenticatedIdeasRoute = AuthenticatedIdeasRouteImport.update({
   id: '/ideas',
   path: '/ideas',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedGrantsRoute = AuthenticatedGrantsRouteImport.update({
+  id: '/grants',
+  path: '/grants',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedFeedRoute = AuthenticatedFeedRouteImport.update({
@@ -111,6 +136,12 @@ const ApiPublicCatalogRoute = ApiPublicCatalogRouteImport.update({
   path: '/api/public/catalog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksStrategistRoute =
+  ApiPublicHooksStrategistRouteImport.update({
+    id: '/api/public/hooks/strategist',
+    path: '/api/public/hooks/strategist',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -121,14 +152,19 @@ export interface FileRoutesByFullPath {
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
+  '/grants': typeof AuthenticatedGrantsRoute
   '/ideas': typeof AuthenticatedIdeasRoute
   '/inventory': typeof AuthenticatedInventoryRoute
+  '/investors': typeof AuthenticatedInvestorsRoute
+  '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/leads': typeof AuthenticatedLeadsRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/strategist': typeof AuthenticatedStrategistRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -139,14 +175,19 @@ export interface FileRoutesByTo {
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
+  '/grants': typeof AuthenticatedGrantsRoute
   '/ideas': typeof AuthenticatedIdeasRoute
   '/inventory': typeof AuthenticatedInventoryRoute
+  '/investors': typeof AuthenticatedInvestorsRoute
+  '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/leads': typeof AuthenticatedLeadsRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/strategist': typeof AuthenticatedStrategistRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -159,14 +200,19 @@ export interface FileRoutesById {
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/feed': typeof AuthenticatedFeedRoute
+  '/_authenticated/grants': typeof AuthenticatedGrantsRoute
   '/_authenticated/ideas': typeof AuthenticatedIdeasRoute
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
+  '/_authenticated/investors': typeof AuthenticatedInvestorsRoute
+  '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute
   '/_authenticated/leads': typeof AuthenticatedLeadsRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/strategist': typeof AuthenticatedStrategistRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -179,14 +225,19 @@ export interface FileRouteTypes {
     | '/customers'
     | '/dashboard'
     | '/feed'
+    | '/grants'
     | '/ideas'
     | '/inventory'
+    | '/investors'
+    | '/knowledge'
     | '/leads'
     | '/projects'
     | '/services'
     | '/settings'
+    | '/strategist'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/strategist'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -197,14 +248,19 @@ export interface FileRouteTypes {
     | '/customers'
     | '/dashboard'
     | '/feed'
+    | '/grants'
     | '/ideas'
     | '/inventory'
+    | '/investors'
+    | '/knowledge'
     | '/leads'
     | '/projects'
     | '/services'
     | '/settings'
+    | '/strategist'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/strategist'
   id:
     | '__root__'
     | '/'
@@ -216,14 +272,19 @@ export interface FileRouteTypes {
     | '/_authenticated/customers'
     | '/_authenticated/dashboard'
     | '/_authenticated/feed'
+    | '/_authenticated/grants'
     | '/_authenticated/ideas'
     | '/_authenticated/inventory'
+    | '/_authenticated/investors'
+    | '/_authenticated/knowledge'
     | '/_authenticated/leads'
     | '/_authenticated/projects'
     | '/_authenticated/services'
     | '/_authenticated/settings'
+    | '/_authenticated/strategist'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/strategist'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -232,6 +293,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
   ApiPublicIngestRoute: typeof ApiPublicIngestRoute
+  ApiPublicHooksStrategistRoute: typeof ApiPublicHooksStrategistRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -256,6 +318,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/strategist': {
+      id: '/_authenticated/strategist'
+      path: '/strategist'
+      fullPath: '/strategist'
+      preLoaderRoute: typeof AuthenticatedStrategistRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
@@ -285,6 +354,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLeadsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/knowledge': {
+      id: '/_authenticated/knowledge'
+      path: '/knowledge'
+      fullPath: '/knowledge'
+      preLoaderRoute: typeof AuthenticatedKnowledgeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/investors': {
+      id: '/_authenticated/investors'
+      path: '/investors'
+      fullPath: '/investors'
+      preLoaderRoute: typeof AuthenticatedInvestorsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/inventory': {
       id: '/_authenticated/inventory'
       path: '/inventory'
@@ -297,6 +380,13 @@ declare module '@tanstack/react-router' {
       path: '/ideas'
       fullPath: '/ideas'
       preLoaderRoute: typeof AuthenticatedIdeasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/grants': {
+      id: '/_authenticated/grants'
+      path: '/grants'
+      fullPath: '/grants'
+      preLoaderRoute: typeof AuthenticatedGrantsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/feed': {
@@ -355,6 +445,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCatalogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/strategist': {
+      id: '/api/public/hooks/strategist'
+      path: '/api/public/hooks/strategist'
+      fullPath: '/api/public/hooks/strategist'
+      preLoaderRoute: typeof ApiPublicHooksStrategistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -365,12 +462,16 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
+  AuthenticatedGrantsRoute: typeof AuthenticatedGrantsRoute
   AuthenticatedIdeasRoute: typeof AuthenticatedIdeasRoute
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
+  AuthenticatedInvestorsRoute: typeof AuthenticatedInvestorsRoute
+  AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute
   AuthenticatedLeadsRoute: typeof AuthenticatedLeadsRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
   AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedStrategistRoute: typeof AuthenticatedStrategistRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -380,12 +481,16 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFeedRoute: AuthenticatedFeedRoute,
+  AuthenticatedGrantsRoute: AuthenticatedGrantsRoute,
   AuthenticatedIdeasRoute: AuthenticatedIdeasRoute,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
+  AuthenticatedInvestorsRoute: AuthenticatedInvestorsRoute,
+  AuthenticatedKnowledgeRoute: AuthenticatedKnowledgeRoute,
   AuthenticatedLeadsRoute: AuthenticatedLeadsRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
   AuthenticatedServicesRoute: AuthenticatedServicesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedStrategistRoute: AuthenticatedStrategistRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -397,17 +502,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ApiPublicCatalogRoute: ApiPublicCatalogRoute,
   ApiPublicIngestRoute: ApiPublicIngestRoute,
+  ApiPublicHooksStrategistRoute: ApiPublicHooksStrategistRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
