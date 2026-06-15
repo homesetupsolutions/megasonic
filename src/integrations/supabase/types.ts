@@ -177,6 +177,7 @@ export type Database = {
           cadence_minutes: number
           created_at: string
           enabled: boolean
+          guidance: string | null
           last_run_at: string | null
           updated_at: string
           user_id: string
@@ -186,6 +187,7 @@ export type Database = {
           cadence_minutes?: number
           created_at?: string
           enabled?: boolean
+          guidance?: string | null
           last_run_at?: string | null
           updated_at?: string
           user_id: string
@@ -195,6 +197,7 @@ export type Database = {
           cadence_minutes?: number
           created_at?: string
           enabled?: boolean
+          guidance?: string | null
           last_run_at?: string | null
           updated_at?: string
           user_id?: string
