@@ -267,6 +267,69 @@ export type Database = {
           },
         ]
       }
+      call_scripts: {
+        Row: {
+          closing: string
+          created_at: string
+          full_script: string
+          greeting: string
+          id: string
+          is_default: boolean
+          objection_handlers: string
+          organization_id: string | null
+          owner_id: string
+          qualifying_questions: string
+          service_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          closing?: string
+          created_at?: string
+          full_script?: string
+          greeting?: string
+          id?: string
+          is_default?: boolean
+          objection_handlers?: string
+          organization_id?: string | null
+          owner_id: string
+          qualifying_questions?: string
+          service_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          closing?: string
+          created_at?: string
+          full_script?: string
+          greeting?: string
+          id?: string
+          is_default?: boolean
+          objection_handlers?: string
+          organization_id?: string | null
+          owner_id?: string
+          qualifying_questions?: string
+          service_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_scripts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "call_scripts_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customers: {
         Row: {
           created_at: string
