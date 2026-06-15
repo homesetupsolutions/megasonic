@@ -51,7 +51,7 @@ export const Route = createFileRoute("/api/public/hooks/daily-social")({
             owner_id: p.id,
             kind: "daily_social_draft",
             title: "Today's Facebook post + DM drafts ready",
-            payload: draft as Record<string, unknown>,
+            payload: draft as never,
             status: "pending",
             priority: 1,
           }));
