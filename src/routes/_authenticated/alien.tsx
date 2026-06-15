@@ -13,6 +13,7 @@ import {
   Mic, MicOff, Volume2, VolumeX, Copy, PhoneCall, MessageSquare,
 } from "lucide-react";
 import { AlienHud } from "@/components/AlienHud";
+import { LiveScanFeed } from "@/components/LiveScanFeed";
 import { askAlien, lookupByPhone, alienNotifications } from "@/lib/alien.functions";
 import {
   triggerStrategistRun, listAiRuns, listAiActions,
