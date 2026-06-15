@@ -80,6 +80,7 @@ export const Route = createFileRoute("/api/public/hooks/voice-call")({
               .select("title, greeting, qualifying_questions, objection_handlers, closing, full_script")
               .eq("owner_id", ownerId)
               .eq("organization_id", orgId)
+              .eq("direction", "inbound")
               .eq("is_default", true)
               .maybeSingle();
             if (scriptRow) {
