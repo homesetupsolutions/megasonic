@@ -98,16 +98,20 @@ export default function PhonesPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Setup URLs</CardTitle>
+          <CardTitle>How it works</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <UrlRow label="CDR webhook (Action URL base)" value={cdrUrl} />
-          <p className="text-muted-foreground">
-            On each Yealink: <b>Features → Action URL</b> — paste this base URL with{" "}
-            <code>?event=incoming&mac=$mac&remote=$remote&display_remote=$display_remote&local=$local&duration=$duration</code>{" "}
-            in every event field (incoming, outgoing, established, terminated, missed). Or just
-            register the phone below and use the auto-provision URL — it sets all action URLs for you.
+        <CardContent className="space-y-2 text-sm text-muted-foreground">
+          <p>
+            <b>Any IP phone works</b> — Yealink, Grandstream, Cisco, Polycom, Fanvil, Snom. Register the
+            phone below and you'll get three provisioning URLs (Yealink <code>.cfg</code>, Grandstream{" "}
+            <code>.xml</code>, plain-text for anything else).
           </p>
+          <p>
+            Inbound caller IDs are <b>auto-matched against your Square customer list</b>. Known
+            customers get linked instantly; unknown numbers create a new lead tagged{" "}
+            <code>source: desk_phone</code>.
+          </p>
+          <UrlRow label="Universal CDR webhook (works for every brand)" value={cdrUrl} />
         </CardContent>
       </Card>
 
@@ -165,7 +169,9 @@ export default function PhonesPage() {
 
       <div className="grid md:grid-cols-2 gap-4">
         {devices.map((d) => {
-          const provUrl = `${origin}/api/public/provision/${d.mac_address}.cfg?token=${d.provision_token}`;
+          const yealink = `${origin}/api/public/provision/${d.mac_address}.cfg?token=${d.provision_token}`;
+          const grandstream = `${origin}/api/public/provision/cfg${d.mac_address}.xml?token=${d.provision_token}`;
+          const generic = `${origin}/api/public/provision/${d.mac_address}.txt?token=${d.provision_token}`;
           return (
             <Card key={d.id}>
               <CardHeader className="flex flex-row items-center justify-between">
@@ -179,7 +185,9 @@ export default function PhonesPage() {
               <CardContent className="space-y-2 text-sm">
                 <div><b>MAC:</b> <code>{d.mac_address}</code></div>
                 <div><b>SIP:</b> {d.sip_username}@{d.sip_server}:{d.sip_port}</div>
-                <UrlRow label="Provisioning URL (paste in phone Auto Provision)" value={provUrl} />
+                <UrlRow label="Yealink provisioning URL" value={yealink} />
+                <UrlRow label="Grandstream provisioning URL" value={grandstream} />
+                <UrlRow label="Other brands — plain-text setup" value={generic} />
                 <div className="text-xs text-muted-foreground">
                   Last fetched: {d.last_provisioned_at ? new Date(d.last_provisioned_at).toLocaleString() : "never"}
                 </div>
