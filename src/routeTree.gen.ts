@@ -15,6 +15,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedStrategistRouteImport } from './routes/_authenticated/strategist'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated/services'
+import { Route as AuthenticatedScriptsRouteImport } from './routes/_authenticated/scripts'
+import { Route as AuthenticatedQuickBookRouteImport } from './routes/_authenticated/quick-book'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedLeadsRouteImport } from './routes/_authenticated/leads'
 import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authenticated/knowledge'
@@ -62,6 +64,16 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
 const AuthenticatedServicesRoute = AuthenticatedServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedScriptsRoute = AuthenticatedScriptsRouteImport.update({
+  id: '/scripts',
+  path: '/scripts',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedQuickBookRoute = AuthenticatedQuickBookRouteImport.update({
+  id: '/quick-book',
+  path: '/quick-book',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProjectsRoute = AuthenticatedProjectsRouteImport.update({
@@ -180,6 +192,8 @@ export interface FileRoutesByFullPath {
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/leads': typeof AuthenticatedLeadsRoute
   '/projects': typeof AuthenticatedProjectsRoute
+  '/quick-book': typeof AuthenticatedQuickBookRoute
+  '/scripts': typeof AuthenticatedScriptsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/strategist': typeof AuthenticatedStrategistRoute
@@ -206,6 +220,8 @@ export interface FileRoutesByTo {
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/leads': typeof AuthenticatedLeadsRoute
   '/projects': typeof AuthenticatedProjectsRoute
+  '/quick-book': typeof AuthenticatedQuickBookRoute
+  '/scripts': typeof AuthenticatedScriptsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/strategist': typeof AuthenticatedStrategistRoute
@@ -234,6 +250,8 @@ export interface FileRoutesById {
   '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute
   '/_authenticated/leads': typeof AuthenticatedLeadsRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
+  '/_authenticated/quick-book': typeof AuthenticatedQuickBookRoute
+  '/_authenticated/scripts': typeof AuthenticatedScriptsRoute
   '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/strategist': typeof AuthenticatedStrategistRoute
@@ -262,6 +280,8 @@ export interface FileRouteTypes {
     | '/knowledge'
     | '/leads'
     | '/projects'
+    | '/quick-book'
+    | '/scripts'
     | '/services'
     | '/settings'
     | '/strategist'
@@ -288,6 +308,8 @@ export interface FileRouteTypes {
     | '/knowledge'
     | '/leads'
     | '/projects'
+    | '/quick-book'
+    | '/scripts'
     | '/services'
     | '/settings'
     | '/strategist'
@@ -315,6 +337,8 @@ export interface FileRouteTypes {
     | '/_authenticated/knowledge'
     | '/_authenticated/leads'
     | '/_authenticated/projects'
+    | '/_authenticated/quick-book'
+    | '/_authenticated/scripts'
     | '/_authenticated/services'
     | '/_authenticated/settings'
     | '/_authenticated/strategist'
@@ -376,6 +400,20 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof AuthenticatedServicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/scripts': {
+      id: '/_authenticated/scripts'
+      path: '/scripts'
+      fullPath: '/scripts'
+      preLoaderRoute: typeof AuthenticatedScriptsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/quick-book': {
+      id: '/_authenticated/quick-book'
+      path: '/quick-book'
+      fullPath: '/quick-book'
+      preLoaderRoute: typeof AuthenticatedQuickBookRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/projects': {
@@ -530,6 +568,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute
   AuthenticatedLeadsRoute: typeof AuthenticatedLeadsRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
+  AuthenticatedQuickBookRoute: typeof AuthenticatedQuickBookRoute
+  AuthenticatedScriptsRoute: typeof AuthenticatedScriptsRoute
   AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStrategistRoute: typeof AuthenticatedStrategistRoute
@@ -551,6 +591,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedKnowledgeRoute: AuthenticatedKnowledgeRoute,
   AuthenticatedLeadsRoute: AuthenticatedLeadsRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
+  AuthenticatedQuickBookRoute: AuthenticatedQuickBookRoute,
+  AuthenticatedScriptsRoute: AuthenticatedScriptsRoute,
   AuthenticatedServicesRoute: AuthenticatedServicesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStrategistRoute: AuthenticatedStrategistRoute,

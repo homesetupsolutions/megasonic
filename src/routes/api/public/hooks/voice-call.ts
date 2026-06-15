@@ -72,6 +72,23 @@ export const Route = createFileRoute("/api/public/hooks/voice-call")({
             orgId = org?.id ?? null;
           }
 
+          // Load this org's default call script (if any) so the AI speaks the owner's words
+          let scriptBlock = "";
+          if (orgId) {
+            const { data: scriptRow } = await supabaseAdmin
+              .from("call_scripts")
+              .select("title, greeting, qualifying_questions, objection_handlers, closing, full_script")
+              .eq("owner_id", ownerId)
+              .eq("organization_id", orgId)
+              .eq("is_default", true)
+              .maybeSingle();
+            if (scriptRow) {
+              scriptBlock = scriptRow.full_script?.trim()
+                ? `\n\nUSE THIS FULL SCRIPT VERBATIM:\n${scriptRow.full_script}`
+                : `\n\nFOLLOW THIS SCRIPT:\nGREETING: ${scriptRow.greeting}\nQUESTIONS: ${scriptRow.qualifying_questions}\nOBJECTIONS: ${scriptRow.objection_handlers}\nCLOSING: ${scriptRow.closing}`;
+            }
+          }
+
           // Ask AI to extract intent + proposed booking
           let ai_summary = "";
           let ai_intent = "";
@@ -91,7 +108,8 @@ export const Route = createFileRoute("/api/public/hooks/voice-call")({
                     {
                       role: "system",
                       content:
-                        "You are an AI receptionist for FeelBass and HSS. From a call transcript, return STRICT JSON: {intent, summary, proposed_booking:{customer_name,customer_phone,customer_email,scheduled_at(ISO8601),duration_minutes,notes}}. Omit fields you don't know. Use today's date if caller says relative times.",
+                        "You are an AI receptionist for FeelBass and HSS. From a call transcript, return STRICT JSON: {intent, summary, proposed_booking:{customer_name,customer_phone,customer_email,scheduled_at(ISO8601),duration_minutes,notes}}. Omit fields you don't know. Use today's date if caller says relative times." +
+                        scriptBlock,
                     },
                     { role: "user", content: transcript },
                   ],
