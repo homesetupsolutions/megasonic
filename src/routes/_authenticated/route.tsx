@@ -34,6 +34,8 @@ import {
   Award,
   Plug,
   PhoneCall,
+  Phone,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -55,9 +57,11 @@ const items = [
   { title: "Investors", url: "/investors", icon: TrendingUp },
   { title: "Grants", url: "/grants", icon: Award },
   { title: "Services & Pricing", url: "/services", icon: Tags },
+  { title: "Quick Book", url: "/quick-book", icon: Sparkles },
   { title: "Approvals", url: "/approvals", icon: CheckSquare },
   { title: "Bookings", url: "/bookings", icon: Calendar },
   { title: "AI Calls", url: "/calls", icon: PhoneCall },
+  { title: "Call Scripts", url: "/scripts", icon: Phone },
   { title: "Connections", url: "/connections", icon: Plug },
   { title: "Projects", url: "/projects", icon: FolderKanban },
   { title: "Unified Feed", url: "/feed", icon: Rss },
