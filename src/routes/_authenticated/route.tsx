@@ -25,6 +25,9 @@ import {
   ScrollText,
   Settings,
   LogOut,
+  Tags,
+  CheckSquare,
+  Calendar,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -41,6 +44,9 @@ export const Route = createFileRoute("/_authenticated")({
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Services & Pricing", url: "/services", icon: Tags },
+  { title: "Approvals", url: "/approvals", icon: CheckSquare },
+  { title: "Bookings", url: "/bookings", icon: Calendar },
   { title: "Projects", url: "/projects", icon: FolderKanban },
   { title: "Unified Feed", url: "/feed", icon: Rss },
   { title: "Ideas", url: "/ideas", icon: Lightbulb },
