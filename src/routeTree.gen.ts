@@ -38,6 +38,7 @@ import { Route as ApiPublicCatalogRouteImport } from './routes/api/public/catalo
 import { Route as ApiPublicAllRouteImport } from './routes/api/public/all'
 import { Route as ApiPublicHooksVoiceCallRouteImport } from './routes/api/public/hooks/voice-call'
 import { Route as ApiPublicHooksStrategistRouteImport } from './routes/api/public/hooks/strategist'
+import { Route as ApiPublicHooksDailySocialRouteImport } from './routes/api/public/hooks/daily-social'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -185,6 +186,12 @@ const ApiPublicHooksStrategistRoute =
     path: '/api/public/hooks/strategist',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksDailySocialRoute =
+  ApiPublicHooksDailySocialRouteImport.update({
+    id: '/api/public/hooks/daily-social',
+    path: '/api/public/hooks/daily-social',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -213,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/api/public/all': typeof ApiPublicAllRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/daily-social': typeof ApiPublicHooksDailySocialRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
   '/api/public/hooks/voice-call': typeof ApiPublicHooksVoiceCallRoute
 }
@@ -243,6 +251,7 @@ export interface FileRoutesByTo {
   '/api/public/all': typeof ApiPublicAllRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/daily-social': typeof ApiPublicHooksDailySocialRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
   '/api/public/hooks/voice-call': typeof ApiPublicHooksVoiceCallRoute
 }
@@ -275,6 +284,7 @@ export interface FileRoutesById {
   '/api/public/all': typeof ApiPublicAllRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/daily-social': typeof ApiPublicHooksDailySocialRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
   '/api/public/hooks/voice-call': typeof ApiPublicHooksVoiceCallRoute
 }
@@ -307,6 +317,7 @@ export interface FileRouteTypes {
     | '/api/public/all'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/daily-social'
     | '/api/public/hooks/strategist'
     | '/api/public/hooks/voice-call'
   fileRoutesByTo: FileRoutesByTo
@@ -337,6 +348,7 @@ export interface FileRouteTypes {
     | '/api/public/all'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/daily-social'
     | '/api/public/hooks/strategist'
     | '/api/public/hooks/voice-call'
   id:
@@ -368,6 +380,7 @@ export interface FileRouteTypes {
     | '/api/public/all'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/daily-social'
     | '/api/public/hooks/strategist'
     | '/api/public/hooks/voice-call'
   fileRoutesById: FileRoutesById
@@ -379,6 +392,7 @@ export interface RootRouteChildren {
   ApiPublicAllRoute: typeof ApiPublicAllRoute
   ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
   ApiPublicIngestRoute: typeof ApiPublicIngestRoute
+  ApiPublicHooksDailySocialRoute: typeof ApiPublicHooksDailySocialRoute
   ApiPublicHooksStrategistRoute: typeof ApiPublicHooksStrategistRoute
   ApiPublicHooksVoiceCallRoute: typeof ApiPublicHooksVoiceCallRoute
 }
@@ -588,6 +602,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksStrategistRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/daily-social': {
+      id: '/api/public/hooks/daily-social'
+      path: '/api/public/hooks/daily-social'
+      fullPath: '/api/public/hooks/daily-social'
+      preLoaderRoute: typeof ApiPublicHooksDailySocialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -649,6 +670,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicAllRoute: ApiPublicAllRoute,
   ApiPublicCatalogRoute: ApiPublicCatalogRoute,
   ApiPublicIngestRoute: ApiPublicIngestRoute,
+  ApiPublicHooksDailySocialRoute: ApiPublicHooksDailySocialRoute,
   ApiPublicHooksStrategistRoute: ApiPublicHooksStrategistRoute,
   ApiPublicHooksVoiceCallRoute: ApiPublicHooksVoiceCallRoute,
 }
