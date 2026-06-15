@@ -21,6 +21,7 @@ import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authentica
 import { Route as AuthenticatedInvestorsRouteImport } from './routes/_authenticated/investors'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
 import { Route as AuthenticatedIdeasRouteImport } from './routes/_authenticated/ideas'
+import { Route as AuthenticatedGrantsRouteImport } from './routes/_authenticated/grants'
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
@@ -90,6 +91,11 @@ const AuthenticatedIdeasRoute = AuthenticatedIdeasRouteImport.update({
   path: '/ideas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedGrantsRoute = AuthenticatedGrantsRouteImport.update({
+  id: '/grants',
+  path: '/grants',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedFeedRoute = AuthenticatedFeedRouteImport.update({
   id: '/feed',
   path: '/feed',
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
+  '/grants': typeof AuthenticatedGrantsRoute
   '/ideas': typeof AuthenticatedIdeasRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/investors': typeof AuthenticatedInvestorsRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/customers': typeof AuthenticatedCustomersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/feed': typeof AuthenticatedFeedRoute
+  '/grants': typeof AuthenticatedGrantsRoute
   '/ideas': typeof AuthenticatedIdeasRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/investors': typeof AuthenticatedInvestorsRoute
@@ -192,6 +200,7 @@ export interface FileRoutesById {
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/feed': typeof AuthenticatedFeedRoute
+  '/_authenticated/grants': typeof AuthenticatedGrantsRoute
   '/_authenticated/ideas': typeof AuthenticatedIdeasRoute
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/investors': typeof AuthenticatedInvestorsRoute
@@ -216,6 +225,7 @@ export interface FileRouteTypes {
     | '/customers'
     | '/dashboard'
     | '/feed'
+    | '/grants'
     | '/ideas'
     | '/inventory'
     | '/investors'
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/customers'
     | '/dashboard'
     | '/feed'
+    | '/grants'
     | '/ideas'
     | '/inventory'
     | '/investors'
@@ -261,6 +272,7 @@ export interface FileRouteTypes {
     | '/_authenticated/customers'
     | '/_authenticated/dashboard'
     | '/_authenticated/feed'
+    | '/_authenticated/grants'
     | '/_authenticated/ideas'
     | '/_authenticated/inventory'
     | '/_authenticated/investors'
@@ -370,6 +382,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIdeasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/grants': {
+      id: '/_authenticated/grants'
+      path: '/grants'
+      fullPath: '/grants'
+      preLoaderRoute: typeof AuthenticatedGrantsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/feed': {
       id: '/_authenticated/feed'
       path: '/feed'
@@ -443,6 +462,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCustomersRoute: typeof AuthenticatedCustomersRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
+  AuthenticatedGrantsRoute: typeof AuthenticatedGrantsRoute
   AuthenticatedIdeasRoute: typeof AuthenticatedIdeasRoute
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedInvestorsRoute: typeof AuthenticatedInvestorsRoute
@@ -461,6 +481,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCustomersRoute: AuthenticatedCustomersRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFeedRoute: AuthenticatedFeedRoute,
+  AuthenticatedGrantsRoute: AuthenticatedGrantsRoute,
   AuthenticatedIdeasRoute: AuthenticatedIdeasRoute,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedInvestorsRoute: AuthenticatedInvestorsRoute,
