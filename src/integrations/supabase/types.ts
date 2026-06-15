@@ -271,6 +271,7 @@ export type Database = {
         Row: {
           closing: string
           created_at: string
+          direction: string
           full_script: string
           greeting: string
           id: string
@@ -286,6 +287,7 @@ export type Database = {
         Insert: {
           closing?: string
           created_at?: string
+          direction?: string
           full_script?: string
           greeting?: string
           id?: string
@@ -301,6 +303,7 @@ export type Database = {
         Update: {
           closing?: string
           created_at?: string
+          direction?: string
           full_script?: string
           greeting?: string
           id?: string
