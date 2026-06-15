@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Brain, Play, CheckCircle2, XCircle, Zap, AlertCircle } from "lucide-react";
+import { AlienHud } from "@/components/AlienHud";
 
 export const Route = createFileRoute("/_authenticated/strategist")({
   component: StrategistPage,
