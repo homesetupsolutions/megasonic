@@ -42,6 +42,7 @@ import { Route as ApiPublicHooksYealinkCdrRouteImport } from './routes/api/publi
 import { Route as ApiPublicHooksVoiceCallRouteImport } from './routes/api/public/hooks/voice-call'
 import { Route as ApiPublicHooksStrategistRouteImport } from './routes/api/public/hooks/strategist'
 import { Route as ApiPublicHooksDailySocialRouteImport } from './routes/api/public/hooks/daily-social'
+import { Route as ApiPublicHooksDailyRemindersRouteImport } from './routes/api/public/hooks/daily-reminders'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -211,6 +212,12 @@ const ApiPublicHooksDailySocialRoute =
     path: '/api/public/hooks/daily-social',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksDailyRemindersRoute =
+  ApiPublicHooksDailyRemindersRouteImport.update({
+    id: '/api/public/hooks/daily-reminders',
+    path: '/api/public/hooks/daily-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -240,6 +247,7 @@ export interface FileRoutesByFullPath {
   '/api/public/all': typeof ApiPublicAllRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/daily-reminders': typeof ApiPublicHooksDailyRemindersRoute
   '/api/public/hooks/daily-social': typeof ApiPublicHooksDailySocialRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
   '/api/public/hooks/voice-call': typeof ApiPublicHooksVoiceCallRoute
@@ -274,6 +282,7 @@ export interface FileRoutesByTo {
   '/api/public/all': typeof ApiPublicAllRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/daily-reminders': typeof ApiPublicHooksDailyRemindersRoute
   '/api/public/hooks/daily-social': typeof ApiPublicHooksDailySocialRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
   '/api/public/hooks/voice-call': typeof ApiPublicHooksVoiceCallRoute
@@ -310,6 +319,7 @@ export interface FileRoutesById {
   '/api/public/all': typeof ApiPublicAllRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/daily-reminders': typeof ApiPublicHooksDailyRemindersRoute
   '/api/public/hooks/daily-social': typeof ApiPublicHooksDailySocialRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
   '/api/public/hooks/voice-call': typeof ApiPublicHooksVoiceCallRoute
@@ -346,6 +356,7 @@ export interface FileRouteTypes {
     | '/api/public/all'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/daily-reminders'
     | '/api/public/hooks/daily-social'
     | '/api/public/hooks/strategist'
     | '/api/public/hooks/voice-call'
@@ -380,6 +391,7 @@ export interface FileRouteTypes {
     | '/api/public/all'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/daily-reminders'
     | '/api/public/hooks/daily-social'
     | '/api/public/hooks/strategist'
     | '/api/public/hooks/voice-call'
@@ -415,6 +427,7 @@ export interface FileRouteTypes {
     | '/api/public/all'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/daily-reminders'
     | '/api/public/hooks/daily-social'
     | '/api/public/hooks/strategist'
     | '/api/public/hooks/voice-call'
@@ -429,6 +442,7 @@ export interface RootRouteChildren {
   ApiPublicAllRoute: typeof ApiPublicAllRoute
   ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
   ApiPublicIngestRoute: typeof ApiPublicIngestRoute
+  ApiPublicHooksDailyRemindersRoute: typeof ApiPublicHooksDailyRemindersRoute
   ApiPublicHooksDailySocialRoute: typeof ApiPublicHooksDailySocialRoute
   ApiPublicHooksStrategistRoute: typeof ApiPublicHooksStrategistRoute
   ApiPublicHooksVoiceCallRoute: typeof ApiPublicHooksVoiceCallRoute
@@ -669,6 +683,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksDailySocialRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/daily-reminders': {
+      id: '/api/public/hooks/daily-reminders'
+      path: '/api/public/hooks/daily-reminders'
+      fullPath: '/api/public/hooks/daily-reminders'
+      preLoaderRoute: typeof ApiPublicHooksDailyRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -732,6 +753,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicAllRoute: ApiPublicAllRoute,
   ApiPublicCatalogRoute: ApiPublicCatalogRoute,
   ApiPublicIngestRoute: ApiPublicIngestRoute,
+  ApiPublicHooksDailyRemindersRoute: ApiPublicHooksDailyRemindersRoute,
   ApiPublicHooksDailySocialRoute: ApiPublicHooksDailySocialRoute,
   ApiPublicHooksStrategistRoute: ApiPublicHooksStrategistRoute,
   ApiPublicHooksVoiceCallRoute: ApiPublicHooksVoiceCallRoute,
