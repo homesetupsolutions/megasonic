@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Copy, Phone, Plus, Trash2, PhoneIncoming, PhoneOutgoing, PhoneMissed } from "lucide-react";
 import { toast } from "sonner";
 import { useMemo, useState } from "react";
+import { RingtoneManager } from "@/components/RingtoneManager";
 
 export const Route = createFileRoute("/_authenticated/phones")({ component: PhonesPage });
 
@@ -222,6 +223,10 @@ export default function PhonesPage() {
           <p className="text-muted-foreground text-sm">No phones registered yet.</p>
         )}
       </div>
+
+      <RingtoneManager />
+
+
 
       <Card>
         <CardHeader>
