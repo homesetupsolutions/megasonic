@@ -196,8 +196,8 @@ export function AlienHud({
   const { stage, next, toNext, progress } = stageFor(xp);
 
   const [petName, setPetName] = useState<string>(() => {
-    if (typeof window === "undefined") return "Zibby";
-    return localStorage.getItem("alien.name") || "Zibby";
+    if (typeof window === "undefined") return "ET";
+    return localStorage.getItem("alien.name") || "ET";
   });
   const [editingName, setEditingName] = useState(false);
 
