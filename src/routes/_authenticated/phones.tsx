@@ -172,11 +172,21 @@ export default function PhonesPage() {
               placeholder="https://your-bucket/ring.wav"
             />
           </Field>
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 flex gap-2">
             <Button onClick={() => save.mutate(form)} disabled={save.isPending || !form.mac_address}>
               {save.isPending ? "Saving…" : "Save phone"}
             </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() =>
+                setForm({ ...form, sip_server: "sip.callcentric.com", sip_port: 5060 })
+              }
+            >
+              CallCentric preset
+            </Button>
           </div>
+
         </CardContent>
       </Card>
 
