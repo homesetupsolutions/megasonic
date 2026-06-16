@@ -112,8 +112,21 @@ export default function PhonesPage() {
             <code>source: desk_phone</code>.
           </p>
           <UrlRow label="Universal CDR webhook (works for every brand)" value={cdrUrl} />
+          <UrlRow label="Provisioning server (point your phone's Auto-Provision URL here)" value={`${origin}/api/public/provision/`} />
+          <p className="pt-2 text-xs">
+            <b>Note on FTPS:</b> Lovable Cloud serves provisioning over <b>HTTPS</b> (which Yealink,
+            Grandstream, Cisco, Polycom and CallCentric-supplied phones all support natively and is
+            more secure than FTPS). Set your phone's Auto-Provision <i>Server URL</i> to the link
+            above plus your device-specific file (shown on each phone card below).
+          </p>
+          <p className="text-xs">
+            <b>CallCentric setup:</b> SIP server <code>sip.callcentric.com</code> · port{" "}
+            <code>5060</code> · username = your <b>1777xxxxxxx</b> account number · password = your
+            CallCentric SIP password. Click <b>CallCentric preset</b> in the form below to autofill.
+          </p>
         </CardContent>
       </Card>
+
 
       <Card>
         <CardHeader>
