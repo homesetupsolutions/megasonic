@@ -224,6 +224,10 @@ export default function PhonesPage() {
         )}
       </div>
 
+      <RingtoneManager />
+
+
+
       <Card>
         <CardHeader>
           <CardTitle>Recent calls (live)</CardTitle>
