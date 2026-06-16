@@ -21,6 +21,7 @@ import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedPhonesRouteImport } from './routes/_authenticated/phones'
 import { Route as AuthenticatedLeadsRouteImport } from './routes/_authenticated/leads'
 import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authenticated/knowledge'
+import { Route as AuthenticatedIvrRouteImport } from './routes/_authenticated/ivr'
 import { Route as AuthenticatedInvestorsRouteImport } from './routes/_authenticated/investors'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
 import { Route as AuthenticatedIdeasRouteImport } from './routes/_authenticated/ideas'
@@ -101,6 +102,11 @@ const AuthenticatedLeadsRoute = AuthenticatedLeadsRouteImport.update({
 const AuthenticatedKnowledgeRoute = AuthenticatedKnowledgeRouteImport.update({
   id: '/knowledge',
   path: '/knowledge',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedIvrRoute = AuthenticatedIvrRouteImport.update({
+  id: '/ivr',
+  path: '/ivr',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedInvestorsRoute = AuthenticatedInvestorsRouteImport.update({
@@ -235,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/ideas': typeof AuthenticatedIdeasRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/investors': typeof AuthenticatedInvestorsRoute
+  '/ivr': typeof AuthenticatedIvrRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/leads': typeof AuthenticatedLeadsRoute
   '/phones': typeof AuthenticatedPhonesRoute
@@ -270,6 +277,7 @@ export interface FileRoutesByTo {
   '/ideas': typeof AuthenticatedIdeasRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/investors': typeof AuthenticatedInvestorsRoute
+  '/ivr': typeof AuthenticatedIvrRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/leads': typeof AuthenticatedLeadsRoute
   '/phones': typeof AuthenticatedPhonesRoute
@@ -307,6 +315,7 @@ export interface FileRoutesById {
   '/_authenticated/ideas': typeof AuthenticatedIdeasRoute
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/investors': typeof AuthenticatedInvestorsRoute
+  '/_authenticated/ivr': typeof AuthenticatedIvrRoute
   '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute
   '/_authenticated/leads': typeof AuthenticatedLeadsRoute
   '/_authenticated/phones': typeof AuthenticatedPhonesRoute
@@ -344,6 +353,7 @@ export interface FileRouteTypes {
     | '/ideas'
     | '/inventory'
     | '/investors'
+    | '/ivr'
     | '/knowledge'
     | '/leads'
     | '/phones'
@@ -379,6 +389,7 @@ export interface FileRouteTypes {
     | '/ideas'
     | '/inventory'
     | '/investors'
+    | '/ivr'
     | '/knowledge'
     | '/leads'
     | '/phones'
@@ -415,6 +426,7 @@ export interface FileRouteTypes {
     | '/_authenticated/ideas'
     | '/_authenticated/inventory'
     | '/_authenticated/investors'
+    | '/_authenticated/ivr'
     | '/_authenticated/knowledge'
     | '/_authenticated/leads'
     | '/_authenticated/phones'
@@ -534,6 +546,13 @@ declare module '@tanstack/react-router' {
       path: '/knowledge'
       fullPath: '/knowledge'
       preLoaderRoute: typeof AuthenticatedKnowledgeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ivr': {
+      id: '/_authenticated/ivr'
+      path: '/ivr'
+      fullPath: '/ivr'
+      preLoaderRoute: typeof AuthenticatedIvrRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/investors': {
@@ -707,6 +726,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedIdeasRoute: typeof AuthenticatedIdeasRoute
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedInvestorsRoute: typeof AuthenticatedInvestorsRoute
+  AuthenticatedIvrRoute: typeof AuthenticatedIvrRoute
   AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute
   AuthenticatedLeadsRoute: typeof AuthenticatedLeadsRoute
   AuthenticatedPhonesRoute: typeof AuthenticatedPhonesRoute
@@ -732,6 +752,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIdeasRoute: AuthenticatedIdeasRoute,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedInvestorsRoute: AuthenticatedInvestorsRoute,
+  AuthenticatedIvrRoute: AuthenticatedIvrRoute,
   AuthenticatedKnowledgeRoute: AuthenticatedKnowledgeRoute,
   AuthenticatedLeadsRoute: AuthenticatedLeadsRoute,
   AuthenticatedPhonesRoute: AuthenticatedPhonesRoute,
