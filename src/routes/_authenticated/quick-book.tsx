@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, ChevronLeft, Calendar, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { SquareCardOnFile } from "@/components/SquareCardOnFile";
 
 export const Route = createFileRoute("/_authenticated/quick-book")({ component: QuickBookPage });
 
@@ -52,7 +53,8 @@ function QuickBookPage() {
     queryFn: () => listSvcFn({ data: {} }) as any,
   });
 
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [bookingId, setBookingId] = useState<string | null>(null);
   const [orgId, setOrgId] = useState<string | null>(null);
   const [svcId, setSvcId] = useState<string | null>(null);
   const [day, setDay] = useState<Date>(startOfDay(new Date()));
@@ -78,10 +80,11 @@ function QuickBookPage() {
           notes: notes || null,
         },
       }) as any,
-    onSuccess: () => {
-      toast.success("Booked! 🎉");
+    onSuccess: (row: any) => {
+      toast.success("Booked! Now add card on file.");
       qc.invalidateQueries({ queryKey: ["bookings"] });
-      navigate({ to: "/bookings" });
+      setBookingId(row?.id ?? null);
+      setStep(5);
     },
     onError: (e: any) => toast.error(e?.message ?? "Failed"),
   });
@@ -230,6 +233,24 @@ function QuickBookPage() {
           </Button>
         </Card>
       )}
+
+      {step === 5 && bookingId && (
+        <Card className="p-4 space-y-3">
+          <h2 className="font-semibold text-lg">5. Card on file</h2>
+          <p className="text-sm text-muted-foreground">
+            Required to confirm booking. 24h notice or $45 fee applies.
+          </p>
+          <SquareCardOnFile
+            bookingId={bookingId}
+            cardholderName={name}
+            feeText="24h notice required, otherwise a $45 fee will be charged"
+            onSaved={() => setTimeout(() => navigate({ to: "/bookings" }), 800)}
+          />
+          <Button variant="ghost" className="w-full" onClick={() => navigate({ to: "/bookings" })}>
+            Skip for now
+          </Button>
+        </Card>
+      )}
     </div>
   );
 }
@@ -243,7 +264,7 @@ function BackRow({ onBack, label }: { onBack: () => void; label: string }) {
 }
 
 function Stepper({ step }: { step: number }) {
-  const labels = ["Business", "Service", "Time", "Customer"];
+  const labels = ["Business", "Service", "Time", "Customer", "Card"];
   return (
     <div className="flex gap-2">
       {labels.map((l, i) => {

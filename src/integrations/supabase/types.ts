@@ -224,6 +224,12 @@ export type Database = {
       }
       bookings: {
         Row: {
+          cancellation_fee_cents: number | null
+          cancellation_fee_charged_at: string | null
+          cancellation_payment_id: string | null
+          cancellation_policy: string | null
+          card_brand: string | null
+          card_last4: string | null
           created_at: string
           customer_email: string | null
           customer_name: string
@@ -236,10 +242,18 @@ export type Database = {
           scheduled_at: string
           service_id: string | null
           source: string
+          square_card_id: string | null
+          square_customer_id: string | null
           status: string
           updated_at: string
         }
         Insert: {
+          cancellation_fee_cents?: number | null
+          cancellation_fee_charged_at?: string | null
+          cancellation_payment_id?: string | null
+          cancellation_policy?: string | null
+          card_brand?: string | null
+          card_last4?: string | null
           created_at?: string
           customer_email?: string | null
           customer_name: string
@@ -252,10 +266,18 @@ export type Database = {
           scheduled_at: string
           service_id?: string | null
           source?: string
+          square_card_id?: string | null
+          square_customer_id?: string | null
           status?: string
           updated_at?: string
         }
         Update: {
+          cancellation_fee_cents?: number | null
+          cancellation_fee_charged_at?: string | null
+          cancellation_payment_id?: string | null
+          cancellation_policy?: string | null
+          card_brand?: string | null
+          card_last4?: string | null
           created_at?: string
           customer_email?: string | null
           customer_name?: string
@@ -268,6 +290,8 @@ export type Database = {
           scheduled_at?: string
           service_id?: string | null
           source?: string
+          square_card_id?: string | null
+          square_customer_id?: string | null
           status?: string
           updated_at?: string
         }
