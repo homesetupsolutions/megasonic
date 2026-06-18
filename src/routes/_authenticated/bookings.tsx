@@ -166,6 +166,15 @@ function BookingsPage() {
                     {b.customer_phone && ` · ${b.customer_phone}`}
                   </p>
                   {b.notes && <p className="text-sm mt-2">{b.notes}</p>}
+                  <div className="mt-2 flex items-center gap-2 text-xs">
+                    {b.card_last4 ? (
+                      <Badge variant="secondary">💳 {b.card_brand} •••• {b.card_last4}</Badge>
+                    ) : (
+                      <Button size="sm" variant="outline" onClick={() => setCardForId(cardForId === b.id ? null : b.id)}>
+                        {cardForId === b.id ? "Hide card form" : "Add card on file"}
+                      </Button>
+                    )}
+                  </div>
                 </div>
                 <Select value={b.status} onValueChange={(v) => update.mutate({ id: b.id, status: v })}>
                   <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
@@ -179,6 +188,15 @@ function BookingsPage() {
                 </Select>
               </div>
             </CardHeader>
+            {cardForId === b.id && (
+              <CardContent>
+                <SquareCardOnFile
+                  bookingId={b.id}
+                  cardholderName={b.customer_name}
+                  onSaved={() => { setCardForId(null); qc.invalidateQueries({ queryKey: ["bookings"] }); }}
+                />
+              </CardContent>
+            )}
           </Card>
         ))}
         {!bookings?.length && (
