@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, ChevronLeft, Calendar, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { SquareCardOnFile } from "@/components/SquareCardOnFile";
 
 export const Route = createFileRoute("/_authenticated/quick-book")({ component: QuickBookPage });
 
