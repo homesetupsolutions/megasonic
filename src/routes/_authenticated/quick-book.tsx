@@ -80,10 +80,11 @@ function QuickBookPage() {
           notes: notes || null,
         },
       }) as any,
-    onSuccess: () => {
-      toast.success("Booked! 🎉");
+    onSuccess: (row: any) => {
+      toast.success("Booked! Now add card on file.");
       qc.invalidateQueries({ queryKey: ["bookings"] });
-      navigate({ to: "/bookings" });
+      setBookingId(row?.id ?? null);
+      setStep(5);
     },
     onError: (e: any) => toast.error(e?.message ?? "Failed"),
   });
