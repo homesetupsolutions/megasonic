@@ -233,6 +233,24 @@ function QuickBookPage() {
           </Button>
         </Card>
       )}
+
+      {step === 5 && bookingId && (
+        <Card className="p-4 space-y-3">
+          <h2 className="font-semibold text-lg">5. Card on file</h2>
+          <p className="text-sm text-muted-foreground">
+            Required to confirm booking. 24h notice or $45 fee applies.
+          </p>
+          <SquareCardOnFile
+            bookingId={bookingId}
+            cardholderName={name}
+            feeText="24h notice required, otherwise a $45 fee will be charged"
+            onSaved={() => setTimeout(() => navigate({ to: "/bookings" }), 800)}
+          />
+          <Button variant="ghost" className="w-full" onClick={() => navigate({ to: "/bookings" })}>
+            Skip for now
+          </Button>
+        </Card>
+      )}
     </div>
   );
 }
