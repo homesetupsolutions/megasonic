@@ -263,8 +263,7 @@ function BackRow({ onBack, label }: { onBack: () => void; label: string }) {
   );
 }
 
-function Stepper({ step }: { step: number }) {
-  const labels = ["Business", "Service", "Time", "Customer"];
+  const labels = ["Business", "Service", "Time", "Customer", "Card"];
   return (
     <div className="flex gap-2">
       {labels.map((l, i) => {
