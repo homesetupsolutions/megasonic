@@ -53,7 +53,8 @@ function QuickBookPage() {
     queryFn: () => listSvcFn({ data: {} }) as any,
   });
 
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [bookingId, setBookingId] = useState<string | null>(null);
   const [orgId, setOrgId] = useState<string | null>(null);
   const [svcId, setSvcId] = useState<string | null>(null);
   const [day, setDay] = useState<Date>(startOfDay(new Date()));
