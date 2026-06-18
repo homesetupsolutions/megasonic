@@ -67,10 +67,30 @@ function BookingsPage() {
     onError: (e: any) => toast.error(e.message),
   });
 
+  const chargeFn = useServerFn(chargeCancellationFee);
   const update = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: any }) => updateFn({ data: { id, status } }),
+    mutationFn: async ({ id, status }: { id: string; status: any }) => {
+      const res: any = await updateFn({ data: { id, status } });
+      if (status === "cancelled" || status === "no_show") {
+        try {
+          const charge: any = await chargeFn({ data: { bookingId: id } });
+          if (charge?.charged) {
+            toast.success(`Charged $${((charge.amount ?? 4500) / 100).toFixed(2)} cancellation fee`);
+          } else if (charge?.reason === "no_card_on_file") {
+            toast.warning("No card on file — fee not charged");
+          } else if (charge?.reason === "outside_window") {
+            toast.info("Outside 24h window — no fee charged");
+          }
+        } catch (e: any) {
+          toast.error(`Fee charge failed: ${e?.message ?? "error"}`);
+        }
+      }
+      return res;
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["bookings"] }),
   });
+
+  const [cardForId, setCardForId] = useState<string | null>(null);
 
   const orgServices = services?.filter((s) => s.organization_id === orgId) ?? [];
 
