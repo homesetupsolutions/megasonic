@@ -203,6 +203,35 @@ export const approveChangeRequest = createServerFn({ method: "POST" })
       payload: { organization_id: req.organization_id, service_id: appliedServiceId, change_type: req.change_type },
     });
 
+    // Push to every linked project's webhook_url (price-everywhere)
+    try {
+      const { data: linked } = await supabase
+        .from("linked_projects")
+        .select("name, webhook_url")
+        .eq("owner_id", userId)
+        .not("webhook_url", "is", null);
+      const pushPayload = {
+        event: "catalog.updated",
+        organization_id: req.organization_id,
+        service_id: appliedServiceId,
+        change_type: req.change_type,
+        payload,
+      };
+      await Promise.allSettled(
+        (linked ?? []).map((p: any) =>
+          fetch(p.webhook_url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(pushPayload),
+          }).then((r) => log.push({ step: "push", target: p.name, status: r.status })).catch((e) =>
+            log.push({ step: "push.error", target: p.name, error: String(e) }),
+          ),
+        ),
+      );
+    } catch (e) {
+      log.push({ step: "broadcast.error", error: e instanceof Error ? e.message : String(e) });
+    }
+
     const { error: updErr } = await supabase
       .from("price_change_requests")
       .update({
