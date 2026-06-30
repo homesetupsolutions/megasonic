@@ -36,6 +36,8 @@ import {
   PhoneCall,
   Phone,
   Sparkles,
+  BookOpen,
+  Radio,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -65,8 +67,10 @@ const items = [
   { title: "Call Scripts", url: "/scripts", icon: Phone },
   { title: "Desk Phones", url: "/phones", icon: Phone },
   { title: "IVR Designer", url: "/ivr", icon: PhoneCall },
+  { title: "SIP Trunks", url: "/sip-trunks", icon: Radio },
   { title: "Connections", url: "/connections", icon: Plug },
   { title: "Projects", url: "/projects", icon: FolderKanban },
+  { title: "How-to Manual", url: "/manual", icon: BookOpen },
   { title: "Unified Feed", url: "/feed", icon: Rss },
   { title: "Ideas", url: "/ideas", icon: Lightbulb },
   { title: "Leads", url: "/leads", icon: Users },

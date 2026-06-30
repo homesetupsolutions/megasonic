@@ -13,12 +13,14 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedStrategistRouteImport } from './routes/_authenticated/strategist'
+import { Route as AuthenticatedSipTrunksRouteImport } from './routes/_authenticated/sip-trunks'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedServicesRouteImport } from './routes/_authenticated/services'
 import { Route as AuthenticatedScriptsRouteImport } from './routes/_authenticated/scripts'
 import { Route as AuthenticatedQuickBookRouteImport } from './routes/_authenticated/quick-book'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedPhonesRouteImport } from './routes/_authenticated/phones'
+import { Route as AuthenticatedManualRouteImport } from './routes/_authenticated/manual'
 import { Route as AuthenticatedLeadsRouteImport } from './routes/_authenticated/leads'
 import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authenticated/knowledge'
 import { Route as AuthenticatedIvrRouteImport } from './routes/_authenticated/ivr'
@@ -44,6 +46,7 @@ import { Route as ApiPublicHooksVoiceCallRouteImport } from './routes/api/public
 import { Route as ApiPublicHooksStrategistRouteImport } from './routes/api/public/hooks/strategist'
 import { Route as ApiPublicHooksDailySocialRouteImport } from './routes/api/public/hooks/daily-social'
 import { Route as ApiPublicHooksDailyRemindersRouteImport } from './routes/api/public/hooks/daily-reminders'
+import { Route as ApiPublicHooksCallcentricSipRouteImport } from './routes/api/public/hooks/callcentric-sip'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -62,6 +65,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthenticatedStrategistRoute = AuthenticatedStrategistRouteImport.update({
   id: '/strategist',
   path: '/strategist',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSipTrunksRoute = AuthenticatedSipTrunksRouteImport.update({
+  id: '/sip-trunks',
+  path: '/sip-trunks',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -92,6 +100,11 @@ const AuthenticatedProjectsRoute = AuthenticatedProjectsRouteImport.update({
 const AuthenticatedPhonesRoute = AuthenticatedPhonesRouteImport.update({
   id: '/phones',
   path: '/phones',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedManualRoute = AuthenticatedManualRouteImport.update({
+  id: '/manual',
+  path: '/manual',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedLeadsRoute = AuthenticatedLeadsRouteImport.update({
@@ -224,6 +237,12 @@ const ApiPublicHooksDailyRemindersRoute =
     path: '/api/public/hooks/daily-reminders',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksCallcentricSipRoute =
+  ApiPublicHooksCallcentricSipRouteImport.update({
+    id: '/api/public/hooks/callcentric-sip',
+    path: '/api/public/hooks/callcentric-sip',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -244,16 +263,19 @@ export interface FileRoutesByFullPath {
   '/ivr': typeof AuthenticatedIvrRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/leads': typeof AuthenticatedLeadsRoute
+  '/manual': typeof AuthenticatedManualRoute
   '/phones': typeof AuthenticatedPhonesRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/quick-book': typeof AuthenticatedQuickBookRoute
   '/scripts': typeof AuthenticatedScriptsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/sip-trunks': typeof AuthenticatedSipTrunksRoute
   '/strategist': typeof AuthenticatedStrategistRoute
   '/api/public/all': typeof ApiPublicAllRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/callcentric-sip': typeof ApiPublicHooksCallcentricSipRoute
   '/api/public/hooks/daily-reminders': typeof ApiPublicHooksDailyRemindersRoute
   '/api/public/hooks/daily-social': typeof ApiPublicHooksDailySocialRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
@@ -280,16 +302,19 @@ export interface FileRoutesByTo {
   '/ivr': typeof AuthenticatedIvrRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/leads': typeof AuthenticatedLeadsRoute
+  '/manual': typeof AuthenticatedManualRoute
   '/phones': typeof AuthenticatedPhonesRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/quick-book': typeof AuthenticatedQuickBookRoute
   '/scripts': typeof AuthenticatedScriptsRoute
   '/services': typeof AuthenticatedServicesRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/sip-trunks': typeof AuthenticatedSipTrunksRoute
   '/strategist': typeof AuthenticatedStrategistRoute
   '/api/public/all': typeof ApiPublicAllRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/callcentric-sip': typeof ApiPublicHooksCallcentricSipRoute
   '/api/public/hooks/daily-reminders': typeof ApiPublicHooksDailyRemindersRoute
   '/api/public/hooks/daily-social': typeof ApiPublicHooksDailySocialRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
@@ -318,16 +343,19 @@ export interface FileRoutesById {
   '/_authenticated/ivr': typeof AuthenticatedIvrRoute
   '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute
   '/_authenticated/leads': typeof AuthenticatedLeadsRoute
+  '/_authenticated/manual': typeof AuthenticatedManualRoute
   '/_authenticated/phones': typeof AuthenticatedPhonesRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/quick-book': typeof AuthenticatedQuickBookRoute
   '/_authenticated/scripts': typeof AuthenticatedScriptsRoute
   '/_authenticated/services': typeof AuthenticatedServicesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/sip-trunks': typeof AuthenticatedSipTrunksRoute
   '/_authenticated/strategist': typeof AuthenticatedStrategistRoute
   '/api/public/all': typeof ApiPublicAllRoute
   '/api/public/catalog': typeof ApiPublicCatalogRoute
   '/api/public/ingest': typeof ApiPublicIngestRoute
+  '/api/public/hooks/callcentric-sip': typeof ApiPublicHooksCallcentricSipRoute
   '/api/public/hooks/daily-reminders': typeof ApiPublicHooksDailyRemindersRoute
   '/api/public/hooks/daily-social': typeof ApiPublicHooksDailySocialRoute
   '/api/public/hooks/strategist': typeof ApiPublicHooksStrategistRoute
@@ -356,16 +384,19 @@ export interface FileRouteTypes {
     | '/ivr'
     | '/knowledge'
     | '/leads'
+    | '/manual'
     | '/phones'
     | '/projects'
     | '/quick-book'
     | '/scripts'
     | '/services'
     | '/settings'
+    | '/sip-trunks'
     | '/strategist'
     | '/api/public/all'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/callcentric-sip'
     | '/api/public/hooks/daily-reminders'
     | '/api/public/hooks/daily-social'
     | '/api/public/hooks/strategist'
@@ -392,16 +423,19 @@ export interface FileRouteTypes {
     | '/ivr'
     | '/knowledge'
     | '/leads'
+    | '/manual'
     | '/phones'
     | '/projects'
     | '/quick-book'
     | '/scripts'
     | '/services'
     | '/settings'
+    | '/sip-trunks'
     | '/strategist'
     | '/api/public/all'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/callcentric-sip'
     | '/api/public/hooks/daily-reminders'
     | '/api/public/hooks/daily-social'
     | '/api/public/hooks/strategist'
@@ -429,16 +463,19 @@ export interface FileRouteTypes {
     | '/_authenticated/ivr'
     | '/_authenticated/knowledge'
     | '/_authenticated/leads'
+    | '/_authenticated/manual'
     | '/_authenticated/phones'
     | '/_authenticated/projects'
     | '/_authenticated/quick-book'
     | '/_authenticated/scripts'
     | '/_authenticated/services'
     | '/_authenticated/settings'
+    | '/_authenticated/sip-trunks'
     | '/_authenticated/strategist'
     | '/api/public/all'
     | '/api/public/catalog'
     | '/api/public/ingest'
+    | '/api/public/hooks/callcentric-sip'
     | '/api/public/hooks/daily-reminders'
     | '/api/public/hooks/daily-social'
     | '/api/public/hooks/strategist'
@@ -454,6 +491,7 @@ export interface RootRouteChildren {
   ApiPublicAllRoute: typeof ApiPublicAllRoute
   ApiPublicCatalogRoute: typeof ApiPublicCatalogRoute
   ApiPublicIngestRoute: typeof ApiPublicIngestRoute
+  ApiPublicHooksCallcentricSipRoute: typeof ApiPublicHooksCallcentricSipRoute
   ApiPublicHooksDailyRemindersRoute: typeof ApiPublicHooksDailyRemindersRoute
   ApiPublicHooksDailySocialRoute: typeof ApiPublicHooksDailySocialRoute
   ApiPublicHooksStrategistRoute: typeof ApiPublicHooksStrategistRoute
@@ -490,6 +528,13 @@ declare module '@tanstack/react-router' {
       path: '/strategist'
       fullPath: '/strategist'
       preLoaderRoute: typeof AuthenticatedStrategistRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sip-trunks': {
+      id: '/_authenticated/sip-trunks'
+      path: '/sip-trunks'
+      fullPath: '/sip-trunks'
+      preLoaderRoute: typeof AuthenticatedSipTrunksRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
@@ -532,6 +577,13 @@ declare module '@tanstack/react-router' {
       path: '/phones'
       fullPath: '/phones'
       preLoaderRoute: typeof AuthenticatedPhonesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/manual': {
+      id: '/_authenticated/manual'
+      path: '/manual'
+      fullPath: '/manual'
+      preLoaderRoute: typeof AuthenticatedManualRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/leads': {
@@ -709,6 +761,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksDailyRemindersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/callcentric-sip': {
+      id: '/api/public/hooks/callcentric-sip'
+      path: '/api/public/hooks/callcentric-sip'
+      fullPath: '/api/public/hooks/callcentric-sip'
+      preLoaderRoute: typeof ApiPublicHooksCallcentricSipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -729,12 +788,14 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedIvrRoute: typeof AuthenticatedIvrRoute
   AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute
   AuthenticatedLeadsRoute: typeof AuthenticatedLeadsRoute
+  AuthenticatedManualRoute: typeof AuthenticatedManualRoute
   AuthenticatedPhonesRoute: typeof AuthenticatedPhonesRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
   AuthenticatedQuickBookRoute: typeof AuthenticatedQuickBookRoute
   AuthenticatedScriptsRoute: typeof AuthenticatedScriptsRoute
   AuthenticatedServicesRoute: typeof AuthenticatedServicesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSipTrunksRoute: typeof AuthenticatedSipTrunksRoute
   AuthenticatedStrategistRoute: typeof AuthenticatedStrategistRoute
 }
 
@@ -755,12 +816,14 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIvrRoute: AuthenticatedIvrRoute,
   AuthenticatedKnowledgeRoute: AuthenticatedKnowledgeRoute,
   AuthenticatedLeadsRoute: AuthenticatedLeadsRoute,
+  AuthenticatedManualRoute: AuthenticatedManualRoute,
   AuthenticatedPhonesRoute: AuthenticatedPhonesRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
   AuthenticatedQuickBookRoute: AuthenticatedQuickBookRoute,
   AuthenticatedScriptsRoute: AuthenticatedScriptsRoute,
   AuthenticatedServicesRoute: AuthenticatedServicesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSipTrunksRoute: AuthenticatedSipTrunksRoute,
   AuthenticatedStrategistRoute: AuthenticatedStrategistRoute,
 }
 
@@ -774,6 +837,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicAllRoute: ApiPublicAllRoute,
   ApiPublicCatalogRoute: ApiPublicCatalogRoute,
   ApiPublicIngestRoute: ApiPublicIngestRoute,
+  ApiPublicHooksCallcentricSipRoute: ApiPublicHooksCallcentricSipRoute,
   ApiPublicHooksDailyRemindersRoute: ApiPublicHooksDailyRemindersRoute,
   ApiPublicHooksDailySocialRoute: ApiPublicHooksDailySocialRoute,
   ApiPublicHooksStrategistRoute: ApiPublicHooksStrategistRoute,
@@ -784,13 +848,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

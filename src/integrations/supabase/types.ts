@@ -173,11 +173,14 @@ export type Database = {
       }
       ai_settings: {
         Row: {
+          auto_approve_under_cents: number
           auto_run_on_new_lead: boolean
           cadence_minutes: number
           created_at: string
           enabled: boolean
           guidance: string | null
+          ivr_greeting: string
+          ivr_voice: string
           last_reminders_date: string | null
           last_run_at: string | null
           reminder_enabled: boolean
@@ -189,11 +192,14 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          auto_approve_under_cents?: number
           auto_run_on_new_lead?: boolean
           cadence_minutes?: number
           created_at?: string
           enabled?: boolean
           guidance?: string | null
+          ivr_greeting?: string
+          ivr_voice?: string
           last_reminders_date?: string | null
           last_run_at?: string | null
           reminder_enabled?: boolean
@@ -205,11 +211,14 @@ export type Database = {
           user_id: string
         }
         Update: {
+          auto_approve_under_cents?: number
           auto_run_on_new_lead?: boolean
           cadence_minutes?: number
           created_at?: string
           enabled?: boolean
           guidance?: string | null
+          ivr_greeting?: string
+          ivr_voice?: string
           last_reminders_date?: string | null
           last_run_at?: string | null
           reminder_enabled?: boolean
@@ -1060,6 +1069,7 @@ export type Database = {
           applied_at: string | null
           change_type: string
           created_at: string
+          expires_at: string
           id: string
           organization_id: string
           owner_id: string
@@ -1078,6 +1088,7 @@ export type Database = {
           applied_at?: string | null
           change_type: string
           created_at?: string
+          expires_at?: string
           id?: string
           organization_id: string
           owner_id: string
@@ -1096,6 +1107,7 @@ export type Database = {
           applied_at?: string | null
           change_type?: string
           created_at?: string
+          expires_at?: string
           id?: string
           organization_id?: string
           owner_id?: string
@@ -1245,6 +1257,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      sip_trunks: {
+        Row: {
+          created_at: string
+          did: string
+          enabled: boolean
+          id: string
+          inbound_extension: string | null
+          inbound_route: string
+          label: string | null
+          owner_id: string
+          provider: string
+          sip_password: string | null
+          sip_port: number
+          sip_server: string
+          sip_username: string | null
+          updated_at: string
+          voice: string
+        }
+        Insert: {
+          created_at?: string
+          did: string
+          enabled?: boolean
+          id?: string
+          inbound_extension?: string | null
+          inbound_route?: string
+          label?: string | null
+          owner_id: string
+          provider?: string
+          sip_password?: string | null
+          sip_port?: number
+          sip_server?: string
+          sip_username?: string | null
+          updated_at?: string
+          voice?: string
+        }
+        Update: {
+          created_at?: string
+          did?: string
+          enabled?: boolean
+          id?: string
+          inbound_extension?: string | null
+          inbound_route?: string
+          label?: string | null
+          owner_id?: string
+          provider?: string
+          sip_password?: string | null
+          sip_port?: number
+          sip_server?: string
+          sip_username?: string | null
+          updated_at?: string
+          voice?: string
+        }
+        Relationships: []
       }
       square_locations: {
         Row: {
@@ -1427,7 +1493,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      expire_old_price_requests: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
