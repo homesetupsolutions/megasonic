@@ -1,6 +1,4 @@
-import { createFileRoute, Outlet, redirect, Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { supabase } from "@/integrations/supabase/client";
-import { useEffect } from "react";
+import { createFileRoute, Outlet, Link, useRouterState } from "@tanstack/react-router";
 import {
   SidebarProvider,
   Sidebar,
@@ -12,7 +10,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
-  SidebarFooter,
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
@@ -24,7 +21,6 @@ import {
   Boxes,
   ScrollText,
   Settings,
-  LogOut,
   Tags,
   CheckSquare,
   Calendar,
@@ -39,18 +35,11 @@ import {
   BookOpen,
   Radio,
   HardDriveDownload,
-
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
-  beforeLoad: async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/auth" });
-    return { user: data.user };
-  },
   component: AuthedShell,
 });
 
@@ -84,20 +73,7 @@ const items = [
 ];
 
 function AuthedShell() {
-  const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-
-  useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_OUT") navigate({ to: "/auth", replace: true });
-    });
-    return () => sub.subscription.unsubscribe();
-  }, [navigate]);
-
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
-  };
 
   return (
     <SidebarProvider>
@@ -115,7 +91,7 @@ function AuthedShell() {
                       <SidebarMenuButton asChild isActive={pathname === item.url}>
                         <Link to={item.url} className="flex items-center gap-2">
                           <item.icon className="h-4 w-4" />
-                          <span>{item.title}</span>
+                          {item.title}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -124,11 +100,6 @@ function AuthedShell() {
               </SidebarGroupContent>
             </SidebarGroup>
           </SidebarContent>
-          <SidebarFooter>
-            <Button variant="ghost" size="sm" onClick={signOut} className="justify-start">
-              <LogOut className="h-4 w-4 mr-2" /> Sign out
-            </Button>
-          </SidebarFooter>
         </Sidebar>
 
         <div className="flex-1 flex flex-col min-w-0">
