@@ -79,6 +79,7 @@ const items = [
   { title: "Customers", url: "/customers", icon: UserCircle2 },
   { title: "Inventory", url: "/inventory", icon: Boxes },
   { title: "Activity", url: "/activity", icon: ScrollText },
+  { title: "Backup & Export", url: "/backup", icon: HardDriveDownload },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
