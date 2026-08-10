@@ -1,54 +1,50 @@
+# In-App Backup & Export Page
 
-# Master Command Center — Web Hub + Cross-Project Link
+A one-tap "Backup" page you can open from your phone that downloads every bit of your business data as files you can keep, email to yourself, or drop in Google Drive.
 
-A signed-in web hub on this Lovable project that links **only the FeelBass family + every new project you build from now on**. SonicFeel and Home Setup Solutions stay completely isolated — the hub never reads or writes their data.
+## What you get
 
-## How "all linked and updated" actually works
+A new **Backup & Export** page in the sidebar with:
 
-Lovable projects are independent codebases. To make them feel like one system, this hub owns a single shared backend (Lovable Cloud), and every linked project talks to it. Two mechanisms, used together:
+- **One big "Download Everything" button** — grabs all your data as a single `.json` backup file, named with today's date (e.g. `megasonic-backup-2026-08-10.json`).
+- **Individual table downloads** — a tidy list of cards, one per data set, each with a **CSV** button (opens in Excel / Google Sheets) and a **JSON** button:
+  - Bookings
+  - Customers
+  - Leads
+  - Services & Inventory (catalog)
+  - Call Scripts
+  - Phone Calls & Voice Calls
+  - Phone Devices & SIP Trunks
+  - IVR / AI Settings
+  - Linked Projects
+  - Investors, Grants, Ideas
+  - Activity Log
+  - Price Change Requests
+- **Row counts** shown on each card so you can see at a glance what's in there.
+- **Last backup date** remembered on the device, so you know when you last pulled one.
 
-1. **Shared backend for new projects (cleanest)**
-   When you start a new project on Lovable, you give me one line: *"link this to the hub."* I drop in a small `hub-client.ts` file pointing at the hub's Lovable Cloud URL + a publishable key, plus a per-project API key. From that moment, anything the new project captures (leads, ideas, scans, sales, inventory moves, etc.) writes directly into the hub's tables and shows up live in the dashboard. No copy-paste, no manual sync. Future projects you haven't built yet get linked the same way at creation time.
+Everything downloads straight to your phone or computer — no email step, no waiting.
 
-2. **Webhook bridge for existing projects (feelbasspos, feelbass.vip when it's back)**
-   I add a public endpoint on the hub (`/api/public/ingest`) that accepts signed events. In each existing FeelBass project I drop a 20-line helper that POSTs `{ type, payload }` whenever something happens (new scan, new lead, new sale). The hub stores it in the same tables as new projects. One-way for now; we can promote any of them to full shared-backend later.
+## What is NOT included (and why)
 
-**Excluded by your rule:** sonicfeel.tech, sonicfeel family, homesetupsolutions.ca. I won't add the client or webhook to those, and the hub UI won't show their data. If you ever change your mind, it's one paste per project.
+- **Card numbers** — those live only in Square, never in this system. The backup includes the Square customer/card reference IDs, not card data.
+- **Secrets/API keys** — deliberately excluded so a backup file is safe to store.
+- **Uploaded knowledge files** — the backup lists their names and links, not the raw file bytes.
 
-## Hub modules (what you actually see)
+## How it works (technical)
 
-Sidebar dashboard, signed in via email+password and Google:
+1. **`src/lib/backup.functions.ts`** — new server functions:
+   - `getBackupCounts()` — returns row counts per table for the UI cards.
+   - `exportTable({ table })` — validated against an allow-list of table names; returns rows for that table.
+   - `exportAll()` — returns one object keyed by table name with every row.
+   - All use `.middleware([requireSupabaseAuth])`, so RLS scopes results to your account only. Sensitive columns (`sip_password`, `api_key` on `linked_projects`) are stripped from the output before returning.
 
-- **Projects** — list of linked projects, last-seen timestamp, event count, link-out, per-project API key + revoke. Adding a future project = "+ New project" → copy the snippet.
-- **Unified feed** — every event from every linked project, filterable by project / type / date.
-- **Leads / CRM** — leads from any project flow in here; stage pipeline, notes, follow-up.
-- **Customers** — deduped across projects by email/phone.
-- **Ideas** — quick capture + auto-tag by project, stage (Idea → Validating → Building → Launched).
-- **Inventory** — live view of FeelBass POS items via webhook ingest; manual entry fallback.
-- **Activity log** — audit trail of every write.
-- **Settings** — your profile, project keys, webhook secret, integration placeholders (Call Centric, M365, Ads — wired later when you have keys).
+2. **`src/routes/_authenticated/backup.tsx`** — new page:
+   - `useServerFn` + `useQuery` for counts (no protected calls in loaders).
+   - Client-side helpers to convert rows to CSV and trigger a `Blob` download.
+   - Mobile-first card layout matching the existing shadcn/Tailwind design tokens already used across the app.
+   - `head()` with its own title and description.
 
-## Technical plan
+3. **`src/routes/_authenticated/route.tsx`** — add `{ title: "Backup & Export", url: "/backup", icon: Download }` to the nav list.
 
-- **Backend:** enable Lovable Cloud. Tables: `profiles`, `linked_projects` (id, name, api_key_hash, created_at, last_seen_at), `events` (project_id, type, payload jsonb, created_at), `leads`, `customers`, `ideas`, `inventory_items`, `activity_log`, plus `user_roles` + `has_role()` for future team access. RLS scoped to `auth.uid()` on owner data; `events` writes go through the public ingest route using the project API key, never RLS-bypass from the client.
-- **Public ingest route:** `src/routes/api/public/ingest.ts` — POST `{ project_key, type, payload }`, verifies the key, writes the event, fans out to the right table (lead/idea/inventory/etc.) via a small dispatcher. HMAC-signed bodies, timing-safe compare.
-- **Hub-client snippet** (what gets pasted into other projects): a 30-line module exporting `hub.emit(type, payload)` and `hub.lead(...)`, `hub.idea(...)` helpers. Uses fetch to the hub's public URL. No SDK install required.
-- **Frontend:** TanStack Start, shadcn sidebar, all module pages under `_authenticated/`. TanStack Query + `createServerFn` with `requireSupabaseAuth` for hub reads/writes. PWA manifest so you can install it on Windows/phone.
-- **Realtime:** Supabase realtime subscription on `events` so the unified feed updates the moment another project emits.
-
-## What I'll do this round (phase 1)
-
-1. Enable Lovable Cloud + auth (email + Google).
-2. Schema + RLS + public ingest endpoint + project-key system.
-3. Sidebar shell + Projects page + Unified Feed (realtime) + Ideas Tracker (so you can use it immediately).
-4. Generate the `hub-client.ts` snippet and show it on the Projects page with copy-button + per-project key.
-
-Phase 2 (next message): Leads, Customers, Inventory, Activity log.
-Phase 3: Settings polish, PWA install, integration stubs.
-
-## What I need from you after phase 1 lands
-
-- Paste the snippet into **feelbasspos** (and feelbass.vip when GoDaddy is back). I can do it for you if you @mention the projects in chat — that lets me edit them directly.
-- Any new project you create from now on: just say "link this to the hub" in its first chat and I'll wire it in 30 seconds.
-
-Approve and I'll start building phase 1.
+No database migration and no new dependencies needed.
