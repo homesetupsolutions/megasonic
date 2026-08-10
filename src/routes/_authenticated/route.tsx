@@ -38,6 +38,8 @@ import {
   Sparkles,
   BookOpen,
   Radio,
+  HardDriveDownload,
+
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -77,6 +79,7 @@ const items = [
   { title: "Customers", url: "/customers", icon: UserCircle2 },
   { title: "Inventory", url: "/inventory", icon: Boxes },
   { title: "Activity", url: "/activity", icon: ScrollText },
+  { title: "Backup & Export", url: "/backup", icon: HardDriveDownload },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
