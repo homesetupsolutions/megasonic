@@ -30,13 +30,12 @@ function AuthPage() {
         redirectTo: window.location.origin + "/dashboard",
       },
     });
-
     if (error) {
       toast.error(error.message);
       setLoading(false);
       return;
     }
-    // Supabase handles the redirect automatically — no need to navigate manually here.
+    // Supabase handles the redirect automatically — no need to navigate manually.
   };
 
   return (
