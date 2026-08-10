@@ -38,6 +38,8 @@ import {
   Sparkles,
   BookOpen,
   Radio,
+  HardDriveDownload,
+
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";

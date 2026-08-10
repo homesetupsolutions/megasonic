@@ -34,6 +34,7 @@ import { Route as AuthenticatedCustomersRouteImport } from './routes/_authentica
 import { Route as AuthenticatedConnectionsRouteImport } from './routes/_authenticated/connections'
 import { Route as AuthenticatedCallsRouteImport } from './routes/_authenticated/calls'
 import { Route as AuthenticatedBookingsRouteImport } from './routes/_authenticated/bookings'
+import { Route as AuthenticatedBackupRouteImport } from './routes/_authenticated/backup'
 import { Route as AuthenticatedApprovalsRouteImport } from './routes/_authenticated/approvals'
 import { Route as AuthenticatedAlienRouteImport } from './routes/_authenticated/alien'
 import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
@@ -173,6 +174,11 @@ const AuthenticatedBookingsRoute = AuthenticatedBookingsRouteImport.update({
   path: '/bookings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedBackupRoute = AuthenticatedBackupRouteImport.update({
+  id: '/backup',
+  path: '/backup',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedApprovalsRoute = AuthenticatedApprovalsRouteImport.update({
   id: '/approvals',
   path: '/approvals',
@@ -250,6 +256,7 @@ export interface FileRoutesByFullPath {
   '/activity': typeof AuthenticatedActivityRoute
   '/alien': typeof AuthenticatedAlienRoute
   '/approvals': typeof AuthenticatedApprovalsRoute
+  '/backup': typeof AuthenticatedBackupRoute
   '/bookings': typeof AuthenticatedBookingsRoute
   '/calls': typeof AuthenticatedCallsRoute
   '/connections': typeof AuthenticatedConnectionsRoute
@@ -289,6 +296,7 @@ export interface FileRoutesByTo {
   '/activity': typeof AuthenticatedActivityRoute
   '/alien': typeof AuthenticatedAlienRoute
   '/approvals': typeof AuthenticatedApprovalsRoute
+  '/backup': typeof AuthenticatedBackupRoute
   '/bookings': typeof AuthenticatedBookingsRoute
   '/calls': typeof AuthenticatedCallsRoute
   '/connections': typeof AuthenticatedConnectionsRoute
@@ -330,6 +338,7 @@ export interface FileRoutesById {
   '/_authenticated/activity': typeof AuthenticatedActivityRoute
   '/_authenticated/alien': typeof AuthenticatedAlienRoute
   '/_authenticated/approvals': typeof AuthenticatedApprovalsRoute
+  '/_authenticated/backup': typeof AuthenticatedBackupRoute
   '/_authenticated/bookings': typeof AuthenticatedBookingsRoute
   '/_authenticated/calls': typeof AuthenticatedCallsRoute
   '/_authenticated/connections': typeof AuthenticatedConnectionsRoute
@@ -371,6 +380,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/alien'
     | '/approvals'
+    | '/backup'
     | '/bookings'
     | '/calls'
     | '/connections'
@@ -410,6 +420,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/alien'
     | '/approvals'
+    | '/backup'
     | '/bookings'
     | '/calls'
     | '/connections'
@@ -450,6 +461,7 @@ export interface FileRouteTypes {
     | '/_authenticated/activity'
     | '/_authenticated/alien'
     | '/_authenticated/approvals'
+    | '/_authenticated/backup'
     | '/_authenticated/bookings'
     | '/_authenticated/calls'
     | '/_authenticated/connections'
@@ -677,6 +689,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBookingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/backup': {
+      id: '/_authenticated/backup'
+      path: '/backup'
+      fullPath: '/backup'
+      preLoaderRoute: typeof AuthenticatedBackupRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/approvals': {
       id: '/_authenticated/approvals'
       path: '/approvals'
@@ -775,6 +794,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
   AuthenticatedAlienRoute: typeof AuthenticatedAlienRoute
   AuthenticatedApprovalsRoute: typeof AuthenticatedApprovalsRoute
+  AuthenticatedBackupRoute: typeof AuthenticatedBackupRoute
   AuthenticatedBookingsRoute: typeof AuthenticatedBookingsRoute
   AuthenticatedCallsRoute: typeof AuthenticatedCallsRoute
   AuthenticatedConnectionsRoute: typeof AuthenticatedConnectionsRoute
@@ -803,6 +823,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedActivityRoute: AuthenticatedActivityRoute,
   AuthenticatedAlienRoute: AuthenticatedAlienRoute,
   AuthenticatedApprovalsRoute: AuthenticatedApprovalsRoute,
+  AuthenticatedBackupRoute: AuthenticatedBackupRoute,
   AuthenticatedBookingsRoute: AuthenticatedBookingsRoute,
   AuthenticatedCallsRoute: AuthenticatedCallsRoute,
   AuthenticatedConnectionsRoute: AuthenticatedConnectionsRoute,
@@ -848,13 +869,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
