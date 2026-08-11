@@ -1,7 +1,7 @@
 // Backup / export server functions. RLS scopes every read to the signed-in owner.
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireSupabaseAuth } from "@/lib/open-access";
 
 // Allow-list of exportable tables. Anything not here cannot be requested.
 export const EXPORTABLE_TABLES = [
