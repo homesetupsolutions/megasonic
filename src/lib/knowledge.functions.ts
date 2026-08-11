@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireSupabaseAuth } from "@/lib/open-access";
 
 export const listKnowledge = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -11,6 +11,20 @@ export const listKnowledge = createServerFn({ method: "GET" })
     if (error) throw error;
     return data;
   });
+
+export const createKnowledgeUpload = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i) => z.object({ filename: z.string().min(1) }).parse(i))
+  .handler(async ({ data, context }) => {
+    const safe = data.filename.replace(/[^\w.\-]/g, "_");
+    const path = `${context.userId}/${Date.now()}-${safe}`;
+    const { data: signed, error } = await context.supabase.storage
+      .from("knowledge")
+      .createSignedUploadUrl(path);
+    if (error || !signed) throw error ?? new Error("Could not start upload");
+    return { path, token: signed.token };
+  });
+
 
 export const registerKnowledgeFile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireSupabaseAuth } from "@/lib/open-access";
 
 export const listPhoneDevices = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { listKnowledge, registerKnowledgeFile, deleteKnowledgeFile } from "@/lib/knowledge.functions";
+import { listKnowledge, registerKnowledgeFile, deleteKnowledgeFile, createKnowledgeUpload } from "@/lib/knowledge.functions";
 import { listOrgs } from "@/lib/catalog.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ function KnowledgePage() {
   const regFn = useServerFn(registerKnowledgeFile);
   const delFn = useServerFn(deleteKnowledgeFile);
   const orgsFn = useServerFn(listOrgs);
+  const startUploadFn = useServerFn(createKnowledgeUpload);
 
   const files = useQuery({ queryKey: ["knowledge"], queryFn: () => listFn() });
   const orgs = useQuery({ queryKey: ["orgs"], queryFn: () => orgsFn() });
@@ -37,11 +38,11 @@ function KnowledgePage() {
     if (!list || !list.length) return;
     setUploading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not signed in");
       for (const file of Array.from(list)) {
-        const path = `${user.id}/${Date.now()}-${file.name}`;
-        const { error } = await supabase.storage.from("knowledge").upload(path, file);
+        const { path, token } = await startUploadFn({ data: { filename: file.name } });
+        const { error } = await supabase.storage
+          .from("knowledge")
+          .uploadToSignedUrl(path, token, file);
         if (error) throw error;
         await regFn({ data: {
           storage_path: path, filename: file.name, mime_type: file.type,

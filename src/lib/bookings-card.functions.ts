@@ -1,7 +1,7 @@
 // Server functions for attaching a card-on-file to a booking and charging a cancellation fee.
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireSupabaseAuth } from "@/lib/open-access";
 
 // Publishable Square config exposed to the booking page for the Web Payments SDK.
 export const getSquarePublicConfig = createServerFn({ method: "GET" })
