@@ -46,7 +46,11 @@ export const requireSupabaseAuth = createMiddleware({ type: "function" }).server
       const { data } = await supabase.auth.getClaims(token);
       if (data?.claims?.sub) {
         return next({
-          context: { supabase, userId: data.claims.sub as string, claims: data.claims },
+          context: {
+            supabase,
+            userId: data.claims.sub as string,
+            claims: data.claims as Record<string, unknown>,
+          },
         });
       }
     }
@@ -55,7 +59,11 @@ export const requireSupabaseAuth = createMiddleware({ type: "function" }).server
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const userId = await resolveOwnerId();
     return next({
-      context: { supabase: supabaseAdmin, userId, claims: { sub: userId } as never },
+      context: {
+        supabase: supabaseAdmin as unknown as ReturnType<typeof createClient<Database>>,
+        userId,
+        claims: { sub: userId } as Record<string, unknown>,
+      },
     });
   },
 );
